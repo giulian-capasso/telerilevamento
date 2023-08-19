@@ -1,20 +1,38 @@
 # my first code in R for remote sensing
 
 # install.packages("raster")
+# The raster package can create, read, manipulate, and write raster data
 library(raster)
 
-# setting working directory
+# setting working directory in MacOS
 setwd("~/Desktop/lab")
 
 # import the first image
 # brick funtion creates a multi-layer raster object
+# i am using the brick function to import a satellite image
+
 l2011 <- brick("p224r63_2011.grd")
 l2011
+
+# in the image p224r63_2011.grd, p224 stands for path 224 of the Landsat satellite ; r63 stands for row in the planisphere in the following link
+# https://gisgeography.com/wp-content/uploads/2016/01/World-Referencing-System.png
 
 # plot the image
 plot(l2011)
 
-# https://www.r-graph-gallery.com/42-colors-names.html
-# customized color palette and plot 
-cl <- colorRampPalette(c("black", "grey", "light grey")) (100)
+# https://www.r-graph-gallery.com/42-colors-names.html color names to use as arguments
+# customize color palette to make the plot more visible
+cl <- colorRampPalette(c("black", "grey", "light grey")) (100) 
+# col is a parameter in the plot function to work on the colours
 plot(l2011, col=cl)
+
+# Clarifying the Landsat bands ETM+ 
+# b1 = blu
+# b2 = verde
+# b3 = rosso
+# b4 = near infra red NIR
+# b5 = middle infra red
+# b6 = thermic infra red
+
+
+
