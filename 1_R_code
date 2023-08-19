@@ -26,13 +26,75 @@ cl <- colorRampPalette(c("black", "grey", "light grey")) (100)
 # col is a parameter in the plot function to work on the colours
 plot(l2011, col=cl)
 
-# Clarifying the Landsat bands ETM+ 
-# b1 = blu
-# b2 = verde
-# b3 = rosso
+# Clarifying Landsat bands 
+# b1 = blue
+# b2 = green
+# b3 = red
 # b4 = near infra red NIR
-# b5 = middle infra red
-# b6 = thermic infra red
+# b5 = middle infra red 
+# b6 = thermal infra red
+# b7 = second sensor for middle infrared
 
+# to close and definitively clean the specified plot use dev.off() 
+dev.off()
 
+# plot now just the blue band - B1_sre
+plot(l2011$B1_sre)
+# or
+plot(l2011[[1]])
+
+plot(l2011$B1_sre) 
+cl <- colorRampPalette(c("black", "grey", "light grey")) (100)
+plot(l2011$B1_sre, col=cl) 
+
+# plot b1 from dark blue to blue to light blue
+clb <- colorRampPalette(c("dark blue", "blue", "light blue")) (100)
+plot(l2011$B1_sre, col=clb) 
+
+# export pdf image to lab folder
+pdf("banda1.pdf")
+plot(l2011$B1_sre, col=clb) 
+
+# export png
+png("banda1.png")
+plot(l2011$B1_sre, col=clb) 
+dev.off()
+
+# plot b2 from dark green to green to light green
+clg <- colorRampPalette(c("dark green", "green", "light green")) (100)
+plot(l2011$B2_sre, col=clg) 
+
+# par function allows to set specific multi frame graphics
+# with the par funtion i can plot two or more specific bands/images side by side, in raws and columns
+par(mfrow=c(1,2))
+plot(l2011$B1_sre, col=clb) 
+plot(l2011$B2_sre, col=clg) 
+dev.off()
+
+# export multiframe plot
+pdf("multiframe.pdf")
+par(mfrow=c(1,2))
+plot(l2011$B1_sre, col=clb) 
+plot(l2011$B2_sre, col=clg) 
+dev.off()
+
+# exercise: revert the multiframe
+par(mfrow=c(2,1))
+plot(l2011$B1_sre, col=clb) 
+plot(l2011$B2_sre, col=clg) 
+
+# let's plot the first four bands
+par(mfrow=c(2,2))
+# blue
+plot(l2011$B1_sre, col=clb) 
+# green
+plot(l2011$B2_sre, col=clg) 
+# red
+clr <- colorRampPalette(c("dark red", "red", "pink")) (100)
+plot(l2011$B3_sre, col=clr)
+# NIR
+clnir <- colorRampPalette(c("red", "orange", "yellow")) (100)
+plot(l2011$B4_sre, col=clnir)
+
+## DAY 3 ##
 
