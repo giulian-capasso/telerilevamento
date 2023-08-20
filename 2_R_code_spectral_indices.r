@@ -1,4 +1,7 @@
-# Spectral Indices
+# Let's calculate Spectral vegetation Indices
+# when vegetation is not healty, the reflectance in many waves shifts
+# this change therefore indicates stress
+# we can use the bands we have seen so far to create these indices
 
 library(raster)
 
@@ -8,6 +11,11 @@ library(raster)
 # library(rgdal)
 library(RStoolbox)
 # library(rasterdiv)
+
+# (RStoolbox)library, already loaded, adds tools used to analyze remote sensing data.
+# it contains a function called spectralIndices that calculates a series of spectral indices like NDVi
+# to use it we have to spcify the bands involved, we will calculate the indices concerning the red, infrared and green bands
+# the NDVI index is used to calculate water stress in vegetation
 
 # Exercise: import the first file -> defor1_.jpg -> give it the name l1992
 l1992 <- brick("defor1_.jpg")
@@ -52,6 +60,17 @@ cld <- colorRampPalette(c('blue','white','red'))(100)
 plot(dvi_dif, col=cld)
 
 ## DAY 2 ##
+
+#another index similar to DVI called NDVI is standardized on the sum of the two bands. 
+# important because if we use two images with different bit numbers, to standardize the two indices (e.g. 266 and 265) 
+# it is sufficient to standardize on the reflectance values of the two total bands. it just serves to standardize our index
+
+#DVI #RANGE if I have an 8-bit image (for each of the two bands, infrared black and red, we have 256 possible values) then a pixel will have the maximum infrared black
+# 255-0= 255(reflect all)and max red(absorb all) 0-255=-255
+# so the DVI range is -255 and 255
+# RANGE NDVI (255-0)/(255+0)=1 this is maximum, minimum is (0-255)/(0+255)=-1
+# 8-bit image NDVI range is -1 and 1
+
 
 # Range DVI (8 bit): -255 a 255
 # Range NDVI (8 bit): -1 a 1
