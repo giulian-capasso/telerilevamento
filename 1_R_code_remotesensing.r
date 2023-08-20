@@ -17,6 +17,22 @@ l2011
 # in the image p224r63_2011.grd, p224 stands for path 224 of the Landsat satellite ; r63 stands for row in the planisphere in the following link
 # https://gisgeography.com/wp-content/uploads/2016/01/World-Referencing-System.png
 
+# class tells me the type of object we have: rasterbrick
+# 1499 number of rows
+# 2967 columns
+# 4447533 pixels for each band
+# 7 bands
+# n rows for the n of columns gives me the n of pixels or the resolution
+# resolution is the pixel size 30x30m
+# source data source
+# name are the names of the sre bands (spectral reflectans) applies to all bands except for the thermic one
+# minimum values is always 0 (except in the thermic band) and then maximum values
+# the values range from 0 to 1: because reflectance is the division between the reflected radiant flux and incident 
+# if the object does not reflect anything, the reflectance is equal to 0
+# if the object reflects everything, the result is 1
+# so minimum value 0 and maximum value 1
+# (consider that the values don't always go from 0 to 1)
+
 # plot the image
 plot(l2011)
 
