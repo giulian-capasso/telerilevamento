@@ -1,7 +1,9 @@
 # Code for generating land cover maps from satellite imagery
+# multitemporal analysis of a modification in land use
+
 
 library(raster)
-library(RStoolbox) # classification
+library(RStoolbox) # #contains functions for classification
 # install.packages("ggplot2")
 library(ggplot2)
 # install.packages("gridExtra")
@@ -11,7 +13,8 @@ setwd("~/Desktop/lab")
 
 # NIR 1, RED 2, GREEN 3
 
-defor1 <- brick("defor1.jpg")
+# let's import the multispectral images defor1 and defor2
+defor1 <- brick("defor1.jpg") # brick to import the entire dataset and band of the image
 plotRGB(defor1, r=1, g=2, b=3, stretch="lin")
 ggRGB(defor1, r=1, g=2, b=3, stretch="lin")
 
@@ -21,18 +24,32 @@ defor2 <- brick("defor2.jpg")
 plotRGB(defor2, r=1, g=2, b=3, stretch="lin")
 ggRGB(defor2, r=1, g=2, b=3, stretch="lin")
 
-par(mfrow=c(1,2))
+par(mfrow=c(1,2)) #plot the images in the same graph
 plotRGB(defor1, r=1, g=2, b=3, stretch="lin")
 plotRGB(defor2, r=1, g=2, b=3, stretch="lin")
 
-# multiframe with ggplot2 and gridExtra
+# multiframe with ggplot2 
+# today we use it for the first time to make statistical graphs on the frequencies of the classes 
+# but we will also use it later as a graphic rendering of satellite or drone images
+# ggRGB function is based on two packages, ggplot2 and RStoolbox
+# the RStoolbox package contains the ggRGB function, it's an RGB plot but uses ggplot2
+# just replace plotRGB with ggRGB
+
 p1 <- ggRGB(defor1, r=1, g=2, b=3, stretch="lin")
 p2 <- ggRGB(defor2, r=1, g=2, b=3, stretch="lin")
-grid.arrange(p1, p2, nrow=2)
+
+# now I have to merge these two images with the patchwork package
+# to use this function I have to associate the two plots above with a ggRGB object
+# install patchwork package
+install.packages("patchwork")
+library(patchwork)
+
+p1+p2
+p1/p2 # to put one image on tho pf the other
 
 # unsupervised classification
 d1c <- unsuperClass(defor1, nClasses=2)
-plot(d1c$map)
+plot(d1c$map) #always specify "map"
 # class 1: forest
 # class 2: agriculture
 
@@ -47,7 +64,13 @@ plot(d2c$map)
 d2c3 <- unsuperClass(defor2, nClasses=3)
 plot(d2c3$map)
 
+# we obtained forest pixels to calculate the area occupied by the forest through the yaars
+# To do so let's calculate the frequency (how many times a certain event occurs)
+# ex. frequency of pixels belonging to the forest class
+
 # frequencies
+# to calculate the frequencies, use the freq function, from basic R 
+# it generates frequency tables 
 freq(defor1c$map)
 #   value  count
 # [1,]     1 305664 (forest)
@@ -57,6 +80,9 @@ freq(defor2c$map)
 #     value  count
 # [1,]     1 164530 (forest)
 # [2,]     2 178196 (agricultural areas)
+
+# create a dataset with all frequencies and then do a final plot with ggplot2
+# calculation of the proportion and percentage of the forest in 92 and 06
 
 totpxdefor1 <- 341292
 
@@ -90,8 +116,11 @@ perc_agr1
 # Percentage forest 06 = 48.00628 (defor2) 
 # Percentage agric 06 = 51.99372 (defor2) 
 
-# build a dataframe
-# Columns (fields)
+# build a dataframe with 3 columns
+# the first is the class
+# the second with the % values of 92 
+# the third with the % values of 2006 
+
 class <- c("Forest","Agriculture") # "" because text (e.g. "Forest")
 percent_1992 <- c(89.56, 10.44)
 percent_2006 <- c(48.00, 51.99)
@@ -105,5 +134,3 @@ ggplot(multitemporal, aes(x=class, y=percent_2006, color=class)) + geom_bar(stat
 
 p1 <- ggplot(multitemporal, aes(x=class, y=percent_1992, color=class)) + geom_bar(stat="identity", fill="white")
 p2 <- ggplot(multitemporal, aes(x=class, y=percent_2006, color=class)) + geom_bar(stat="identity", fill="white")
-
-grid.arrange(p1, p2, nrow=1)
