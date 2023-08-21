@@ -1,6 +1,9 @@
 # Time series analysis
-# Greenland increase of temperature
+# Greenland increase in temperature
 # Data and code from Emanuela Cosma
+
+# Using copernicus LST (Land Surface Temperature) variable 
+# to see how much the temperature has changed in Greenland over a certain period of time
 
 # install.packages("raster")
 # install.packages("rasterVis")
@@ -9,6 +12,12 @@ library(raster)
 # rasterVis = visualization methods for raster images 
 
 setwd("~/Desktop/lab/greenland_data")
+
+# REMINDER: brick function creates a Raster Brick object from a satellite image 
+# with many bands all together loads them all on R
+# however now we don't have a satellite image ready with all the bands merged together 
+# we have 4 different data (lst2000, lst2005, lst2010 and lst2015).
+# first we import them one by one (later we'll see how they import all together, with just one function)
 
 # import images
 lst_2000 <- raster("lst_2000.tif")
@@ -22,6 +31,12 @@ plot(lst_2000)
 plot(lst_2005)
 plot(lst_2010)
 plot(lst_2015)
+
+
+#now let's see how to import this set of images all together.
+# we use the lapplay function which applies a function on a list or a vector
+# takes a list of files and applies the same function to all of them
+# in our case to import we use the raster function that we apply to the entire list of files.
 
 # list f files and use lapply function to apply the funcion "raster" to a file list 
 # very useful when you have to import a high number of files
