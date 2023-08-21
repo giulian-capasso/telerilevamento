@@ -1,4 +1,12 @@
 # Multivariate analysis
+# measurement of the variability on a variable
+# first pick a band (e.g. NIR) or I calculate the spectral indices
+# (e.g. NDVI) or I can compact everything in one band (multivariate analysis) and take only the first band
+
+# how to switch from a multi-dimensional image to a single-dimensional one?
+# if I'm in a bi dimension I don't conceive the third but there can be one
+
+# the first band is the one with the most info and therefore we use the one to calculate the variability
 
 library(raster)
 library(RStoolbox)
@@ -13,6 +21,9 @@ p224r63_2011 <- brick("p224r63_2011_masked.grd")
 
 plot(p224r63_2011)
 
+# before multivariate analysis let's resample the image to decrease the resolution and aggregate some pixels
+# AGGREGATE function makes summary statistics. fact stands for factor, i.e. how much we aggregate pixels
+# ex. fact=10 >> 10pixel x 10 pixel
 # resampling
 p224r63_2011res <- aggregate(p224r63_2011, fact=10)
 
