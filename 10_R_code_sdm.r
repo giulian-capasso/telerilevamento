@@ -1,5 +1,8 @@
 # Species Distribution Modelling
 
+# pick some environmental variables and look at the probability of finding a certain species according to them
+# the sdm package does species distribution mode
+
 # install.packages("sdm")
 # install.packages("rgdal", dependencies=T)
 
@@ -7,11 +10,14 @@ library(sdm)
 library(raster) # predictors
 library(rgdal) # species
 
+#system.file function loads a file into R specifying from which package it is taken from
 file <- system.file("external/species.shp", package="sdm") 
 species <- shapefile(file)
 
 # looking at the set
 species
+# occurrence > presence or absence of a certain species
+# 200 points where the species was sampled
 
 # plot
 plot(species)
@@ -20,8 +26,14 @@ plot(species)
 species$Occurrence
 
 # copy and then write:
-plot(species[species$Occurrence == 1,],col='blue',pch=16)
+plot(species[species$Occurrence == 1,],col='blue',pch=16) #pch is the symbol of the "points" on the map
 points(species[species$Occurrence == 0,],col='red',pch=16)
+#points in the space where presence(1) or absence(0) was registered
+
+# plot just the presences
+plot(species[species$Occurrence == 1,], col="blue", pch=19) #presence
+# add points to the previous one
+points(species[species$Occurrence == 0,], col="red", pch=19) #absence
 
 # predictors: look at the path
 path <- system.file("external", package="sdm") 
@@ -69,10 +81,8 @@ points(species[species$Occurrence == 1,], pch=16)
 s1 <- stack(preds,p1)
 plot(s1, col=cl)
 
-# Do you want to change names in the plot of the stack?
-# Here your are!:
-# choose a vector of names for the stack, looking at the previous graph, qhich are:
+# to change names in the plot of the stack
+# choose a vector of names for the stack, looking at the previous graph
 names(s1) <- c('elevation', 'precipitation', 'temperature', 'vegetation', 'model')
-# and then replot!:
+# and then replot:
 plot(s1, col=cl)
-# you are done, with one line of code (as usual!)
