@@ -6,7 +6,9 @@ library(ggplot2) # for ggplot plotting
 library(patchwork) # multiframe with ggplot2 graphs
 
 # install.packages("viridis")
-library(viridis)
+# Viridis has different and incluseive colour palettes available
+# crucial for people with color perceptions divergences
+library(viridis) 
 
 setwd("~/Desktop/lab_/")
 
@@ -38,7 +40,9 @@ sim1/sim2
 
 # calculation of variability over NIR
 nir <- similaun[[1]]
-
+# use "focal" function to calculate the statistical variability in the images 
+# we make a first calculation of the variability using the infrared
+# select the layer to start with
 sd3 <- focal(nir, matrix(1/9, 3, 3), fun=sd) #sd= standard deviation or where 68% of the values fall
 
 clsd <- colorRampPalette(c('blue','green','pink','magenta','orange','brown','red','yellow'))(100) # 
@@ -90,9 +94,7 @@ varSim <- focal(nir, matrix(1/9, 3, 3), fun=sd)
  
 clsd <- colorRampPalette(c('blue','green','pink','magenta','orange','brown','red','yellow'))(100)
 
-# Plot with ggplot but it is not RBG so we need a different code
 
-ggplot() +
 geom_raster(varSim, mapping = aes(x=x, y=y, fill=layer) #layer scanner satellite
 
             # so in order to plot non RGB images with ggplot > 1) empty ggplot() + geom_raster wuth image name, + mapping for the aestetics
