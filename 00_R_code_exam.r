@@ -141,3 +141,36 @@ tgr_23 <- stack(import_23)
 tgr_23
 
 plotRGB(tgr_23, r=4, g=3, b=2, stretch="lin")
+
+# plot and par images
+par(mfrow=c(3,3))
+plotRGB(tgr_18, r=4, g=3, b=2, stretch="lin")
+plotRGB(tgr_19, r=4, g=3, b=2, stretch="lin")
+plotRGB(tgr_20, r=4, g=3, b=2, stretch="lin")
+plotRGB(tgr_21, r=4, g=3, b=2, stretch="lin")
+plotRGB(tgr_22, r=4, g=3, b=2, stretch="lin")
+plotRGB(tgr_23, r=4, g=3, b=2, stretch="lin")
+
+# considering that i put the infrared band on red, everything that appears red in the image is vegetation
+
+dev.off()
+
+## LAND COVER ##
+
+# I classify images by function unsuperClass
+
+pc2018 <- unsuperClass(tgr_18, nClasses=4)
+plot(pc2018$map)
+pc2018
+# class 1: bare ground
+# class 2: clouds
+# class 3: sea
+# class 4: vegetation
+
+pc2019 <- unsuperClass(tgr_19, nClasses=4)
+plot(pc2019$map)
+pc2018
+# class 1: bare ground
+# class 2: clouds
+# class 3: sea
+# class 4: vegetation
