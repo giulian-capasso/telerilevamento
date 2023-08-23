@@ -55,10 +55,9 @@
 # 1 
 # import and data preparation
 
-library(raster)   
+library(raster)  
 library(ggplot2)
 library(RStoolbox)
-library(patchwork)
 library(RColorBrewer)
 
 setwd("~/Desktop/exam")
@@ -143,6 +142,7 @@ tgr_23
 plotRGB(tgr_23, r=4, g=3, b=2, stretch="lin")
 
 # plot and par images
+
 par(mfrow=c(3,3))
 plotRGB(tgr_18, r=4, g=3, b=2, stretch="lin")
 plotRGB(tgr_19, r=4, g=3, b=2, stretch="lin")
@@ -157,20 +157,78 @@ dev.off()
 
 ## LAND COVER ##
 
-# I classify images by function unsuperClass
+# Considering that i put the infrared band on red, everything that appears red in the image is vegetation
 
-pc2018 <- unsuperClass(tgr_18, nClasses=4)
-plot(pc2018$map)
-pc2018
-# class 1: bare ground
-# class 2: clouds
-# class 3: sea
-# class 4: vegetation
+# Cropping the images to mainly focus on land vegetation
 
-pc2019 <- unsuperClass(tgr_19, nClasses=4)
-plot(pc2019$map)
-pc2018
-# class 1: bare ground
-# class 2: clouds
-# class 3: sea
-# class 4: vegetation
+ext <- c(3e+05, 409800, 4190220, 4240220)
+
+#2018
+crop_18 <- crop(tgr_18, ext) 
+plot(crop_18)
+
+#2019
+crop_19 <- crop(tgr_19, ext) 
+plot(crop_19)
+
+#2020
+crop_20 <- crop(tgr_20, ext) 
+plot(crop_20)
+
+#2021
+crop_21 <- crop(tgr_21, ext) 
+plot(crop_21)
+
+#2022
+crop_22 <- crop(tgr_22, ext) 
+plot(crop_22)
+
+#2023
+crop_23 <- crop(tgr_23, ext) 
+plot(crop_23)
+
+dev.off()
+
+
+# ## LAND COVER
+
+# Classification of the images by function unsuperClass
+
+#comment
+clc <- colorRampPalette(c('yellow','red','blue','black'))(100)
+
+# Classification 2019
+class_18 <- unsuperClass(crop_18, nClasses=4)
+plot(class_18$map)
+class_18
+#set.seeds(17)?? <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+# Visualzie true color and classification aside to specify the clesses
+par(mfrow=c(1,2))
+plot(class_18$map, col=clc)
+plotRGB(crop_18, r=3, g=2, b=1, stretch="lin")
+
+# Classification 2019
+class_19 <- unsuperClass(crop_19, nClasses=4)
+plot(class_19$map)
+class_19
+
+# Classification 2020
+class_20 <- unsuperClass(crop_20, nClasses=4)
+plot(class_20$map)
+class_20
+
+# Classification 2021
+class_21 <- unsuperClass(crop_21, nClasses=4)
+plot(class_21$map)
+class_21
+
+# Classification 2022
+class_22 <- unsuperClass(crop_22, nClasses=4)
+plot(class_22$map)
+class_22
+
+# Classification 2023
+class_23 <- unsuperClass(crop_23, nClasses=4)
+plot(class_23$map)
+class_23
