@@ -68,6 +68,8 @@ setwd("~/Desktop/exam")
 # red band 3 - B04
 # infrared band 4 - B08
 
+# CERCARE ALTRI DATI DEL 1990/2000
+
 # 2018
 rlist_18 <- list.files(pattern = "2018") 
 rlist_18
@@ -200,10 +202,18 @@ plot(class_18$map, col=clc, axes = FALSE, box = FALSE)
 dev.off()
 
 freq(class_18$map)
-# 1 14603688 - agriculture / dry land
+# 1 14603688 - cultivated land / dry land
 # 2 26700323 - water bodies
 # 3 10410076 - vegetation
 # 4 3185913 - urban areas
+
+# Total amount of wild (uncultivated) vegetation in 2018
+tot_land_18 <- 14603688 + 10410076 + 3185913 # = 28199677
+tot_veg_18 <- 10410076
+
+prop_veg_18 <- tot_veg_18 / tot_land_18
+percent_veg_18 <- tot_veg_18 * 100 / tot_land_18
+# percentage of wild vegetation 36.91559 in 2018
 
 # ------------------------------------------ #
 
@@ -223,7 +233,16 @@ freq(class_19$map)
 # 3 26675876 - water bodies
 # 4  6716212 - dry land / cities
 
+# Total amount of wild (uncultivated) vegetation in 2019
+tot_land_19 <- 6895229 + 14612683 + 6716212 # = 28224124
+tot_veg_19 <- 6895229
+
+prop_veg_19 <- tot_veg_19 / tot_land_19
+percent_veg_19 <- tot_veg_19 * 100 / tot_land_19
+# percentage of wild vegetation 24.43027 in 2019
+
 # ------------------------------------------ #
+
 
 # Classification 2020 >>> TROVARE FOTO SENZA CLOUDS NUVOLE!!! RIFARE 
 set.seed(42) 
@@ -237,9 +256,17 @@ dev.off()
 
 freq(class_20$map)
 # 1 13365240 - water bodeis
-# 2  7249526 - vegetation + agricult
+# 2  7249526 - vegetation + cultivated land
 # 3  7477871 - clouds
 # 4 26807363 - dry land / urban areas
+
+# Total amount of wild (uncultivated) vegetation in 2019
+#tot_land_19 <- 6895229 + 14612683 + 6716212 # = 28224124
+#tot_veg_19 <- 6895229
+
+#prop_veg_19 <- tot_veg_19 / tot_land_19
+#percent_veg_19 <- tot_veg_19 * 100 / tot_land_19
+# percentage of wild vegetation 24.43027 in 2019
 
 # ------------------------------------------ #
 
@@ -255,10 +282,18 @@ dev.off()
 
 # frequencies
 freq(class_21$map)
-# 1 10725554 - urban areas / dry land
+# 1 12667687 - urban areas / dry land
 # 2  4154237 - dry land / bare ground
-# 3 26617356 - water bodies
+# 3 26617356 - water bodies 
 # 4 11460720 - vegetation
+
+# Total amount of wild (uncultivated) vegetation in 2021
+tot_land_21 <- 12667687 + 4154237 + 11460720 # = 28282644
+tot_veg_21 <- 11460720
+
+prop_veg_21 <- tot_veg_21 / tot_land_21
+percent_veg_21 <- tot_veg_21 * 100 / tot_land_21
+# percentage of wild vegetation 40.5221 in 2021
 
 
 #--------------------------------------------#
@@ -280,6 +315,14 @@ freq(class_22$map)
 # 3  5501619 - vegetation
 # 4  9799178 - bare ground
 
+# Total amount of wild (uncultivated) vegetation in 2021
+#tot_land_22 <- 12667687 + 4154237 + 11460720 # = 28282644
+#tot_veg_22 <- 11460720
+
+#prop_veg_22 <- tot_veg_22 / tot_land_22
+#percent_veg_22 <- tot_veg_22 * 100 / tot_land_22
+# percentage of wild vegetation 40.5221 in 2022
+
 
 #--------------------------------------------#
 
@@ -300,10 +343,19 @@ freq(class_23$map)
 # 3 13143132 - dry field / bare ground
 # 4  7339569 - dry land / cities 
 
+# Total amount of wild (uncultivated) vegetation in 2021
+tot_land_23 <- 7670523 + 13143132 + 7339569 # = 28153224
+tot_veg_23 <- 7670523
 
-# Visualizing this data has been useful to obtain maps where I have pixels of green areas (vegetation),
-# I can now calculate the occupied area and the proportion of pixels of green areas from 2018 to 2023
-# to do so I use the freq. function
+prop_veg_23 <- tot_veg_23 / tot_land_23
+percent_veg_23 <- tot_veg_23 * 100 / tot_land_23
+# percentage of wild vegetation 27.24563 in 2023
+
+
+# Visualizing this data has been useful to obtain maps where I have pixels of wild/uncultivated green areas (vegetation),
+# I calculated the occupied area and the proportion of pixels of green areas from 2018 to 2023
+
+# plotto l'andamento della quantità di verde negli anni e calcolo l'amaount di verde guadagnato tra il 2018 e il 2021 e quello perso dagl iincendi del 2023
 
 
 # Classification 2023
