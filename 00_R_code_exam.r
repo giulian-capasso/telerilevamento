@@ -59,6 +59,7 @@ library(raster)
 library(ggplot2)
 library(RStoolbox)
 library(RColorBrewer)
+library(viridis)
 
 setwd("~/Desktop/exam")
 
@@ -68,7 +69,7 @@ setwd("~/Desktop/exam")
 # infrared band 4 - B08
 
 # 2018
-rlist_18 <- list.files(pattern = "201808") 
+rlist_18 <- list.files(pattern = "2018") 
 rlist_18
 
 import_18 <- lapply(rlist_18, raster)
@@ -79,8 +80,8 @@ tgr_18
 
 plotRGB(tgr_18, r=4, g=3, b=2, stretch="lin")
 
-# 2019
-rlist_19 <- list.files(pattern = "201908") 
+# 2019 
+rlist_19 <- list.files(pattern = "2019") 
 rlist_19
 
 import_19 <- lapply(rlist_19, raster)
@@ -91,9 +92,8 @@ tgr_19
 
 plotRGB(tgr_19, r=4, g=3, b=2, stretch="lin")
 
-
-# 2020 >> NUVOLE!!
-rlist_20 <- list.files(pattern = "202008") 
+# 2020
+rlist_20 <- list.files(pattern = "2020") 
 rlist_20
 
 import_20 <- lapply(rlist_20, raster)
@@ -105,8 +105,8 @@ tgr_20
 plotRGB(tgr_20, r=4, g=3, b=2, stretch="lin")
 
 
-#2021
-rlist_21 <- list.files(pattern = "202108") 
+#2021 
+rlist_21 <- list.files(pattern = "2021") 
 rlist_21
 
 import_21 <- lapply(rlist_21, raster)
@@ -117,8 +117,8 @@ tgr_21
 
 plotRGB(tgr_21, r=4, g=3, b=2, stretch="lin")
 
-#2022 > un po di nuvole
-rlist_22 <- list.files(pattern = "202208") 
+#2022 
+rlist_22 <- list.files(pattern = "2022") 
 rlist_22
 
 import_22 <- lapply(rlist_22, raster)
@@ -130,7 +130,7 @@ tgr_22
 plotRGB(tgr_22, r=4, g=3, b=2, stretch="lin")
 
 #2023
-rlist_23 <- list.files(pattern = "202308") 
+rlist_23 <- list.files(pattern = "2023") 
 rlist_23
 
 import_23 <- lapply(rlist_23, raster)
@@ -141,8 +141,9 @@ tgr_23
 
 plotRGB(tgr_23, r=4, g=3, b=2, stretch="lin")
 
-# plot and par images
+par(mfrow)
 
+# plot and par images
 par(mfrow=c(3,3))
 plotRGB(tgr_18, r=4, g=3, b=2, stretch="lin")
 plotRGB(tgr_19, r=4, g=3, b=2, stretch="lin")
@@ -151,15 +152,9 @@ plotRGB(tgr_21, r=4, g=3, b=2, stretch="lin")
 plotRGB(tgr_22, r=4, g=3, b=2, stretch="lin")
 plotRGB(tgr_23, r=4, g=3, b=2, stretch="lin")
 
-# considering that i put the infrared band on red, everything that appears red in the image is vegetation
-
-dev.off()
-
-## LAND COVER ##
-
 # Considering that i put the infrared band on red, everything that appears red in the image is vegetation
 
-# Cropping the images to mainly focus on land vegetation
+# Cropping the images to focus on land vegetation
 
 ext <- c(3e+05, 409800, 4190220, 4240220)
 
@@ -187,46 +182,129 @@ plot(crop_22)
 crop_23 <- crop(tgr_23, ext) 
 plot(crop_23)
 
-dev.off()
-
-
 # ## LAND COVER
 
 # Classification of the images by function unsuperClass
 
-#comment
-clc <- colorRampPalette(c('yellow','red','blue','black'))(100)
+# set color palette to enhance the differences between the classes
+clc <- colorRampPalette(c('yellow2','cyan4','royalblue4','brown2'))(100)
 
-# Classification 2019
+# Classification 2018
+set.seed(42) # set specific pixels to reproduce identical results each tipe
 class_18 <- unsuperClass(crop_18, nClasses=4)
-plot(class_18$map)
-class_18
-#set.seeds(17)?? <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-# Visualzie true color and classification aside to specify the clesses
+pdf("class_18.pdf")
 par(mfrow=c(1,2))
-plot(class_18$map, col=clc)
 plotRGB(crop_18, r=3, g=2, b=1, stretch="lin")
+plot(class_18$map, col=clc, axes = FALSE, box = FALSE)
+dev.off()
+
+freq(class_18$map)
+# 1 14603688 - agriculture / dry land
+# 2 26700323 - water bodies
+# 3 10410076 - vegetation
+# 4 3185913 - urban areas
+
+# ------------------------------------------ #
 
 # Classification 2019
+set.seed(42)
 class_19 <- unsuperClass(crop_19, nClasses=4)
-plot(class_19$map)
-class_19
 
-# Classification 2020
+pdf("class_19.pdf")
+par(mfrow=c(1,2))
+plotRGB(crop_19, r=3, g=2, b=1, stretch="lin")
+plot(class_19$map, col=clc, axes = FALSE, box = FALSE)
+dev.off()
+
+freq(class_19$map)
+# 1  6895229 - vegetation 
+# 2 14612683 - agriculture
+# 3 26675876 - water bodies
+# 4  6716212 - dry land / cities
+
+# ------------------------------------------ #
+
+# Classification 2020 >>> TROVARE FOTO SENZA CLOUDS NUVOLE!!! RIFARE 
+set.seed(42) 
 class_20 <- unsuperClass(crop_20, nClasses=4)
-plot(class_20$map)
-class_20
+
+pdf("class_20.pdf")
+par(mfrow=c(1,2))
+plotRGB(crop_20, r=3, g=2, b=1, stretch="lin")
+plot(class_20$map, col=clc, axes = FALSE, box = FALSE)
+dev.off()
+
+freq(class_20$map)
+# 1 13365240 - water bodeis
+# 2  7249526 - vegetation + agricult
+# 3  7477871 - clouds
+# 4 26807363 - dry land / urban areas
+
+# ------------------------------------------ #
 
 # Classification 2021
+set.seed(42) 
 class_21 <- unsuperClass(crop_21, nClasses=4)
-plot(class_21$map)
-class_21
 
-# Classification 2022
+pdf("class_21.pdf")
+par(mfrow=c(1,2))
+plotRGB(crop_21, r=3, g=2, b=1, stretch="lin")
+plot(class_21$map, col=clc, axes = FALSE, box = FALSE)
+dev.off()
+
+# frequencies
+freq(class_21$map)
+# 1 10725554 - urban areas / dry land
+# 2  4154237 - dry land / bare ground
+# 3 26617356 - water bodies
+# 4 11460720 - vegetation
+
+
+#--------------------------------------------#
+
+
+# Classification 2022 NUVOLE!!! RIFARE NUVOLE!!! RIFARE 
+set.seed(42) 
 class_22 <- unsuperClass(crop_22, nClasses=4)
-plot(class_22$map)
-class_22
+
+pdf("class_22.pdf")
+par(mfrow=c(1,2))
+plotRGB(crop_22, r=3, g=2, b=1, stretch="lin")
+plot(class_22$map, col=clc, axes = FALSE, box = FALSE)
+dev.off()
+
+freq(class_22$map)
+# 1 10263600 - agriculture
+# 2   152543 - clouds 
+# 3  5501619 - vegetation
+# 4  9799178 - bare ground
+
+
+#--------------------------------------------#
+
+
+# Classification 2023
+set.seed(42) 
+class_23 <- unsuperClass(crop_23, nClasses=4)
+
+pdf("class_23.pdf")
+par(mfrow=c(1,2))
+plotRGB(crop_23, r=3, g=2, b=1, stretch="lin")
+plot(class_23$map, col=clc, axes = FALSE, box = FALSE)
+dev.off()
+
+freq(class_23$map)
+# 1  7670523 - vegetation
+# 2 26746776 - water bodies 
+# 3 13143132 - dry field / bare ground
+# 4  7339569 - dry land / cities 
+
+
+# Visualizing this data has been useful to obtain maps where I have pixels of green areas (vegetation),
+# I can now calculate the occupied area and the proportion of pixels of green areas from 2018 to 2023
+# to do so I use the freq. function
+
 
 # Classification 2023
 class_23 <- unsuperClass(crop_23, nClasses=4)
