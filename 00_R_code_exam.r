@@ -77,7 +77,10 @@ rlist_18
 import_18 <- lapply(rlist_18, raster)
 import_18
 
-tgr_18 <- stack(import_18)
+tgr_18 <- stack(import_18) 
+# tgr is a rasterstack it is the same thing of a rasterbrick, but the rasterbrick is
+# the import of a whole satellite image, instead of rasterstack that we have created
+# with the function stack
 tgr_18
 
 plotRGB(tgr_18, r=4, g=3, b=2, stretch="lin")
