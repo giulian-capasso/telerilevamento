@@ -244,7 +244,7 @@ percent_veg_19 <- tot_veg_19 * 100 / tot_land_19
 # ------------------------------------------ #
 
 
-# Classification 2020 >>> TROVARE FOTO SENZA CLOUDS NUVOLE!!! RIFARE 
+# Classification 2020 
 set.seed(42) 
 class_20 <- unsuperClass(crop_20, nClasses=4)
 
@@ -255,18 +255,18 @@ plot(class_20$map, col=clc, axes = FALSE, box = FALSE)
 dev.off()
 
 freq(class_20$map)
-# 1 13365240 - water bodeis
-# 2  7249526 - vegetation + cultivated land
-# 3  7477871 - clouds
-# 4 26807363 - dry land / urban areas
+# 1  14486297 - cultivated land
+# 2   7471216 - vegetation + cultivated land
+# 3  26673416 - water bodies
+# 4   6269071 - dry land / urban areas
 
 # Total amount of wild (uncultivated) vegetation in 2019
-#tot_land_19 <- 6895229 + 14612683 + 6716212 # = 28224124
-#tot_veg_19 <- 6895229
+tot_land_20 <- 14486297 + 7471216 + 6269071 # = 28226584
+tot_veg_20 <- 7471216
 
-#prop_veg_19 <- tot_veg_19 / tot_land_19
-#percent_veg_19 <- tot_veg_19 * 100 / tot_land_19
-# percentage of wild vegetation 24.43027 in 2019
+prop_veg_20 <- tot_veg_20 / tot_land_20
+percent_veg_20 <- tot_veg_20 * 100 / tot_land_20
+# percentage of wild vegetation 26.46872 in 2020
 
 # ------------------------------------------ #
 
@@ -299,7 +299,7 @@ percent_veg_21 <- tot_veg_21 * 100 / tot_land_21
 #--------------------------------------------#
 
 
-# Classification 2022 NUVOLE!!! RIFARE NUVOLE!!! RIFARE 
+# Classification 2022 
 set.seed(42) 
 class_22 <- unsuperClass(crop_22, nClasses=4)
 
@@ -310,18 +310,18 @@ plot(class_22$map, col=clc, axes = FALSE, box = FALSE)
 dev.off()
 
 freq(class_22$map)
-# 1 10263600 - agriculture
-# 2   152543 - clouds 
-# 3  5501619 - vegetation
-# 4  9799178 - bare ground
+# 1 10775222 - vegetation
+# 2 13334125 - cultivated area / dry land
+# 3 26636891 - water bodies
+# 4  4153762 - bare ground
 
 # Total amount of wild (uncultivated) vegetation in 2021
-#tot_land_22 <- 12667687 + 4154237 + 11460720 # = 28282644
-#tot_veg_22 <- 11460720
+tot_land_22 <- 10775222 + 13334125 + 4153762 # = 28263109
+tot_veg_22 <- 10775222
 
-#prop_veg_22 <- tot_veg_22 / tot_land_22
-#percent_veg_22 <- tot_veg_22 * 100 / tot_land_22
-# percentage of wild vegetation 40.5221 in 2022
+prop_veg_22 <- tot_veg_22 / tot_land_22
+percent_veg_22 <- tot_veg_22 * 100 / tot_land_22
+# percentage of wild vegetation 38.12469 in 2022
 
 
 #--------------------------------------------#
@@ -355,10 +355,24 @@ percent_veg_23 <- tot_veg_23 * 100 / tot_land_23
 # Visualizing this data has been useful to obtain maps where I have pixels of wild/uncultivated green areas (vegetation),
 # I calculated the occupied area and the proportion of pixels of green areas from 2018 to 2023
 
-# plotto l'andamento della quantità di verde negli anni e calcolo l'amaount di verde guadagnato tra il 2018 e il 2021 e quello perso dagl iincendi del 2023
+# I want to see the trend in the amount of wild green areas over the years
+data_perc_veg <- data.frame(year = c(2018, 2019, 2020, 2021, 2022, 2023),
+                   variable = c(36.91559, 24.43027, 26.46872 , 40.5221, 38.12469 ,27.24563))
+
+# Percentage trend
+data_perc_veg$percent <- (data_perc_veg$variable - data_perc_veg$variable[1]) / data_perc_veg$variable[1] * 100
+
+# Creation of the graph with ggplot2
+graph <- ggplot(data_perc_veg, aes(x = year, y = variable)) +
+  geom_line() +
+  labs(x = "Year", y = " % wild green areas") +
+  ggtitle("Percentage trend of wild green areas, 2018-2023, July-August") +
+  ylim(c(min(0), 100)) +
+  theme_minimal()
+
+print(graph)
 
 
-# Classification 2023
-class_23 <- unsuperClass(crop_23, nClasses=4)
-plot(class_23$map)
-class_23
+#--------------------------------------------#
+
+
