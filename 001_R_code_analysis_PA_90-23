@@ -1,458 +1,294 @@
+####### Pre-post fire analysis Palermo August 2023 ####### 
+
+
+# The project focuses on the fires that occurred in the area of Palermo, Sicily between July and August 2023
+# The fire caused evacuations, lack of electricity/water and loss of biodiversity 
+# I compared the images of08/2022 and 08/2023. 2021 images were analyzed and excluded because approximable to 2021 
+# The project might spark Interest on potential long-term analysis on arson in Sicily
+# The area examined ranges between Terrasini and Termini Imerese and covers up to Piana degli Albanesi. The Ficuzza wood was not affected
+# This code processes landsat 8-9 images downloaded from https://earthexplorer.usgs.gov/
+
+
+# Summary 
+# 1. Libraries, Data Import and Visualization 
+# 2. Spectral Indices
+# 3. Classification 
+# 4. Land Surface Temperature
+# 5. 
+
+# -------------------------------------------------- #
+
+# 1. Libraries, Data Import and Visualization 
+
 library(raster)  
 library(ggplot2)
 library(RStoolbox)
-library(RColorBrewer)
+library(patchwork)
 library(viridis)
-library(dplyr)
 
-setwd("~/Desktop/exam2")
+# Set working directory
+setwd("~/Desktop/nuovo/20m")
 
-# Landsat 4-5 / 7 / 8 bands
-# Band 4 - Blue
-# Band 5 - Green
-# Band 6 - Red
-# Band 7 - NIR
-
-# https://www.usgs.gov/faqs/what-are-band-designations-landsat-satellites See more here
-
-# import and process fata 
-# 1990 Landsat L1-3
-rlist_90 <- list.files(pattern = "1990") 
-
-import_90 <- lapply(rlist_90, raster)
-
-tgr_90 <- stack(import_90)
-
-plotRGB(tgr_90, r=3, g=2, b=1, stretch="lin")
-
-ext2 <- c(320000, 409800, 4190220, 4237500)
-crop_90 <- crop(tgr_90, ext2) 
-plotRGB(crop_90, r=3, g=2, b=1, stretch="lin")
-
-set.seed(42) 
-class_90 <- unsuperClass(crop_90, nClasses=4)
-
-pdf("class_90.pdf")
-par(mfrow=c(1,2))
-plotRGB(crop_90, r=3, g=2, b=1, stretch="lin")
-plot(class_90$map, col=clc, axes = FALSE, box = FALSE)
-dev.off()
-freq(class_90$map)
-
-# 1 1189785 - cultivated land / green areas in cities
-# 2 2177023 - water bodies
-# 3  678752 - wild vegetation
-# 4  666408 - dry land
-# NA    6576
-
-# Total amount of wild (uncultivated) vegetation in 1990
-tot_land_90 <- 1189785 + 678752 + 666408 
-tot_wild_veg_90 <- 678752
-
-prop_wildveg_90 <- tot_wild_veg_90 / tot_land_90
-percent_wildveg_90 <- tot_wild_veg_90 * 100 / tot_land_90
-percent_wildveg_90
-# percentage of wild vegetation 26.77581 in 1990
-
-tot_dry_land_90 <- 666408
-prop_dry_land_90 <- tot_dry_land_90 / tot_land_90
-percent_dry_land_90 <- tot_dry_land_90 * 100 / tot_land_90
-percent_dry_land_90
-# 26.28885
-
-tot_culti_90 <- 1189785
-prop_culti_90 <- tot_culti_90 / tot_land_90
-percent_culti_90 <- tot_culti_90 * 100 / tot_land_90
-percent_culti_90
-# 46.93534
-#--------------------------------------------#
-
-# 2000 Landsat L4-5
-rlist_00 <- list.files(pattern = "2000") 
-
-import_00 <- lapply(rlist_00, raster)
-
-tgr_00 <- stack(import_00)
-
-crop_00 <- crop(tgr_00, ext2)
-
-plotRGB(crop_00, r=3, g=2, b=1, stretch="lin")
-
-set.seed(42) 
-class_00 <- unsuperClass(crop_00, nClasses=4)
-
-pdf("class_00.pdf")
-par(mfrow=c(1,2))
-plotRGB(crop_00, r=3, g=2, b=1, stretch="lin")
-plot(class_00$map, col=clc, axes = FALSE, box = FALSE)
-dev.off()
-freq(class_00$map)
-
-# 1  647724 - dry land
-# 2  718885 - wild vegetation
-# 3 1175217 - cultivated land / cities
-# 4 2176718 - water bodies
-
-# Total amount of wild (uncultivated) vegetation in 1990
-tot_land_00 <- 647724 + 718885 + 1175217 
-tot_wild_veg_00 <- 718885
-
-prop_wildveg_00 <- tot_wild_veg_00 / tot_land_00
-percent_wildveg_00 <- tot_wild_veg_00 * 100 / tot_land_00
-percent_wildveg_00
-# percentage of wild vegetation 28.28223 in 2000
-
-tot_dry_land_00 <- 647724
-prop_dry_land_00 <- tot_dry_land_00 / tot_land_00
-percent_dry_land_00 <- tot_dry_land_00 * 100 / tot_land_00
-percent_dry_land_00
-# 25.48263
-
-tot_culti_00 <- 1175217
-prop_culti_00 <- tot_culti_00 / tot_land_00
-percent_culti_00 <- tot_culti_00 * 100 / tot_land_00
-percent_culti_00
-# 46.23515
-
-#--------------------------------------------#
-
-# 2005 Landsat L7 
-rlist_05 <- list.files(pattern = "2005") 
-
-import_05 <- lapply(rlist_05, raster)
-
-tgr_05 <- stack(import_05)
-
-crop_05 <- crop(tgr_05, ext2)
-
-plotRGB(crop_05, r=3, g=2, b=1, stretch="lin")
-
-set.seed(42) 
-class_05 <- unsuperClass(crop_05, nClasses=4)
-
-pdf("class_05.pdf")
-par(mfrow=c(1,2))
-plotRGB(crop_05, r=3, g=2, b=1, stretch="lin")
-plot(class_05$map, col=clc, axes = FALSE, box = FALSE)
-dev.off()
-freq(class_05$map)
-
-# 1  775034 - dry land
-# 2  556841 - wild vegetation
-# 3 2176103 - water bodies 
-# 4 1208707 - cultivated land / cities
-#NA    1859
-
-# Total amount of wild (uncultivated) vegetation in 2005
-tot_land_05 <- 775034 + 556841 + 1208707 
-tot_wild_veg_05 <- 556841
-
-prop_wildveg_05 <- tot_wild_veg_05 / tot_land_05
-percent_wildveg_05 <- tot_wild_veg_05 * 100 / tot_land_05
-percent_wildveg_05
-# percentage of wild vegetation 21.91785 in 2005
-
-tot_dry_land_05 <- 775034
-prop_dry_land_05 <- tot_dry_land_05 / tot_land_05
-percent_dry_land_05 <- tot_dry_land_05 * 100 / tot_land_05
-percent_dry_land_05
-# 30.50616
-
-tot_culti_05 <- 1208707
-prop_culti_05 <- tot_culti_05 / tot_land_05
-percent_culti_05 <- tot_culti_05 * 100 / tot_land_05
-percent_culti_05
-# 47.57599
-
-#--------------------------------------------#
-
-# 2015 Landsat L7 blabla
-rlist_15 <- list.files(pattern = "2015") 
-
-import_15 <- lapply(rlist_15, raster)
-
-tgr_15 <- stack(import_15)
-
-crop_15 <- crop(tgr_15, ext2)
-
-plotRGB(crop_15, r=3, g=2, b=1, stretch="lin")
-
-set.seed(42) 
-class_15 <- unsuperClass(crop_15, nClasses=4)
-
-pdf("class_15.pdf")
-par(mfrow=c(1,2))
-plotRGB(crop_15, r=3, g=2, b=1, stretch="lin")
-plot(class_15$map, col=clc, axes = FALSE, box = FALSE)
-dev.off()
-freq(class_15$map)
-
-# 1  2150993 - water bodies
-# 2   689583 - dry land
-# 3  1247722 - cultivated land / cities
-# 4   603280 - wild vegetation
-#NA    26966
-
-# Total amount of wild (uncultivated) vegetation in 2015
-tot_land_15 <- 689583 + 1247722 + 603280 
-tot_wild_veg_15 <- 603280
-
-prop_wildveg_15 <- tot_wild_veg_15 / tot_land_15
-percent_wildveg_15 <- tot_wild_veg_15 * 100 / tot_land_15
-percent_wildveg_15
-# percentage of wild vegetation 23.74571 in 2015
-
-tot_dry_land_15 <- 689583
-prop_dry_land_15 <- tot_dry_land_15 / tot_land_15
-percent_dry_land_15 <- tot_dry_land_15 * 100 / tot_land_15
-percent_dry_land_15
-# 27.14269
-
-tot_culti_15 <- 1247722
-prop_culti_15 <- tot_culti_15 / tot_land_15
-percent_culti_15 <- tot_culti_15 * 100 / tot_land_15
-percent_culti_15
-# 49.1116
-
-#--------------------------------------------#
-
-# 2020 Landsat L7 blabla
-rlist_20 <- list.files(pattern = "20200801") 
-
-import_20 <- lapply(rlist_20, raster)
-
-tgr_20 <- stack(import_20)
-
-crop_20 <- crop(tgr_20, ext2)
-
-plotRGB(crop_20, r=3, g=2, b=1, stretch="lin")
-
-set.seed(42) 
-class_20 <- unsuperClass(crop_20, nClasses=4)
-
-pdf("class_20.pdf")
-par(mfrow=c(1,2))
-plotRGB(crop_20, r=3, g=2, b=1, stretch="lin")
-plot(class_20$map, col=clc, axes = FALSE, box = FALSE)
-dev.off()
-freq(class_20$map)
-
-# 1    754667 - dry land
-# 2   1176981 - cultivated land / cities
-# 3    611626 - wild vegetation
-# 4   2119826 - water bodies
-# NA    55444
-
-# Total amount of wild (uncultivated) vegetation in 2020
-tot_land_20 <- 754667 + 1176981 + 611626 
-tot_wild_veg_20 <- 611626
-
-prop_wildveg_20 <- tot_wild_veg_20 / tot_land_20
-percent_wildveg_20 <- tot_wild_veg_20 * 100 / tot_land_20
-percent_wildveg_20
-# percentage of wild vegetation 24.04877 in 2020
-
-tot_dry_land_20 <- 754667
-prop_dry_land_20 <- tot_dry_land_20 / tot_land_20
-percent_dry_land_20 <- tot_dry_land_20 * 100 / tot_land_20
-percent_dry_land_20
-# 29.67305
-
-tot_culti_20 <- 1176981
-prop_culti_20 <- tot_culti_20 / tot_land_20
-percent_culti_20 <- tot_culti_20 * 100 / tot_land_20
-percent_culti_20
-# 46.27818
-
-#--------------------------------------------#
-
-# 2021 Landsat L7 blabla
-rlist_21 <- list.files(pattern = "LC08_L2SP_189034_20210820_20210827_02_T1_SR_B") 
-
-import_21 <- lapply(rlist_21, raster)
-
-tgr_21 <- stack(import_21)
-
-crop_21 <- crop(tgr_21, ext2)
-
-plotRGB(crop_21, r=3, g=2, b=1, stretch="lin")
-
-set.seed(42) 
-class_21 <- unsuperClass(crop_21, nClasses=4)
-
-pdf("class_21.pdf")
-par(mfrow=c(1,2))
-plotRGB(crop_21, r=3, g=2, b=1, stretch="lin")
-plot(class_21$map, col=clc, axes = FALSE, box = FALSE)
-dev.off()
-freq(class_21$map)
-
-# 1    636596 - dry land
-# 2   2106046 - water bodies
-# 3    681171 - wild vegetation
-# 4   1220385 - cultivated land / cities
-#   NA   74346
-
-# Total amount of wild (uncultivated) vegetation in 2021
-tot_land_21 <- 636596 + 681171 + 1220385 
-tot_wild_veg_21 <- 681171
-
-prop_wildveg_21 <- tot_wild_veg_21 / tot_land_21
-percent_wildveg_21 <- tot_wild_veg_21 * 100 / tot_land_21
-percent_wildveg_21
-# percentage of wild vegetation 26.83728 in 2021
-
-tot_dry_land_21 <- 636596
-prop_dry_land_21 <- tot_dry_land_21 / tot_land_21
-percent_dry_land_21 <- tot_dry_land_21 * 100 / tot_land_21
-percent_dry_land_21
-# 25.08108
-
-tot_culti_21 <- 1220385
-prop_culti_21 <- tot_culti_21 / tot_land_21
-percent_culti_21 <- tot_culti_21 * 100 / tot_land_21
-percent_culti_21
-# 48.08164
-
-#--------------------------------------------#
-
-# 2022 Landsat L7 blabla
+# data import and processing
+# 2022 
 rlist_22 <- list.files(pattern = "2022") 
-
 import_22 <- lapply(rlist_22, raster)
-
 tgr_22 <- stack(import_22)
+ext <- c(330000, 371000, 4200220, 4237800)
+crop_22 <- crop(tgr_22, ext) 
+#plotRGB(crop_22, r=4, g=3, b=2, stretch="lin")
 
-crop_22 <- crop(tgr_22, ext2)
+# 2023
+rlist_23 <- list.files(pattern = "2023") 
+import_23 <- lapply(rlist_23, raster)
+tgr_23 <- stack(import_23)
+crop_23 <- crop(tgr_23, ext) 
+#plotRGB(crop_23, r=4, g=3, b=2, stretch="lin")
+#plotRGB(crop_23, r=6, g=4, b=3, stretch="lin") # False colors
 
+#Bands for both images
+# Blue : band 2 - B02 file
+# Green: band 3 - B03 file 
+# Red: band 4 -  B04 file
+# NIR: band 6 - B0 file
+# MIR: band 10 - B012
+
+
+# Image visualization
+# True color visualization
+t_2022 <- ggRGB(crop_22, r=4, g=3, b=2, stretch="lin") + ggtitle("2022") +
+  theme(axis.text = element_blank(), axis.title = element_blank())
+t_2023 <- ggRGB(crop_23, r=4, g=3, b=2, stretch="lin") + ggtitle("2023") +
+  theme(axis.text = element_blank(), axis.title = element_blank())
+
+t_2022 + t_2023
+
+# False Colors > NIR on Red 
+f_2022 <- ggRGB(crop_22, r=6, g=4, b=3, stretch="lin") + ggtitle("2022")+
+  theme(axis.text = element_blank(), axis.title = element_blank())
+f_2023 <- ggRGB(crop_23, r=6, g=4, b=3, stretch="lin") + ggtitle("2023")+
+  theme(axis.text = element_blank(), axis.title = element_blank())
+
+f_2022 + f_2023
+
+#--------------------------------------------#
+
+# 2. Spectral Indices
+
+# Vegetation health measure: DVI e NDVI calculation for 2022 and 2023 using NIR and RED bands
+# Burned areas analysis with NBR index using NIR and MIR bands
+# Creating a customized color palette
+cld <- colorRampPalette(c('darkblue', 'white', 'red'))(100) 
+
+## DVI (Difference Vegetation Index): NIR - RED
+
+#dvi22 = crop_22[[4]] - crop_22[[3]]
+dvi22 = crop_22[[6]] - crop_22[[4]]
+plot(dvi22, col=cld, main="DVI 2021")
+
+dvi23 = crop_23[[6]] - crop_23[[4]]
+plot(dvi23, col=cld, main="DVI 2021")
+
+# Multiframe con i DVI per le due immagini
+
+#min_value_dvi <- min(min(values(dvi22_20m)))
+#max_value_dvi <- max(max(values(dvi22_20m)))
+
+# multiframe 
+par(mfrow=c(1,2))
+plot(dvi22, col=cld)
+plot(dvi23, col=cld)
+
+# Positive Value: reflectance in the near-infrared (NIR) band is higher than that in the red (RED) band
+# This can be associated with healthy vegetation and dense vegetation, as healthy plants reflect more NIR light for photosynthesis
+
+# Zero or Near-Zero Value: reflectance in the NIR band is similar to that in the red band
+# This could indicate the presence of bare soil or poorly developed vegetation cover
+
+# Negative Value: reflectance in the NIR band is lower than that in the red band
+# This could be due to various factors such as exposed soil, water, or the presence of snow
+
+dvi_dif = dvi23 - dvi22
+
+# plot DVI difference and export as pdf
+cldf <- colorRampPalette(c("beige", "blue3", 'white', "brown2", "yellow"))(100)
+
+pdf("dvi-dif23-22")
+par(mfrow=c(1,2))
+plotRGB(crop_23, r=4, g=3, b=2, stretch="lin", main="True Color Image 2023")
+plot(dvi_dif, col=cldf, axes = FALSE, box = FALSE, main="DVI Difference 2022-23")
+dev.off()
+
+# A positive difference between DVI values of the two years indicates that the vegetation health and density have likely increased from 2022 to 2023
+# A negative difference between DVI values suggests a decrease in vegetation health and density (see burned area)
+
+## NDVI: (NIR - RED) / (NIR + RED)
+
+ndvi22 =  dvi22 / (crop_22[[6]] + crop_22[[4]])
+ndvi23 =  dvi23 / (crop_23[[6]] + crop_23[[4]])
+
+# Plot and export as pdf
+
+pdf("ndvi-22-23_2")
+par(mfrow=c(1,2))
+plot(ndvi22, col=clb, axes = FALSE, box = FALSE, main="NDVI 2022")
+plot(ndvi23, col=clb, axes = FALSE, box = FALSE, main="NDVI 2023")
+dev.off()
+
+ndvi_dif = ndvi23 - ndvi22
+plot(ndvi_dif, col=cldf, axes = FALSE, box = FALSE) + title(main="NDVI Difference 2022 - 2023")
+
+# NBR (Normalized Burn Ratio) = (NIR - MIR) / (NIR + MIR)
+clb <- colorRampPalette(c("white", "darkgreen", "yellow", "orange"))(100)
+
+#2022
+NBR_2022 = (crop_22[[6]] - crop_22[[10]]) / crop_22[[6]] + crop_22[[10]]
+plot(NBR_2022, col = clb) + title(main="NBR 2022") 
+
+#2023
+NBR_2023 = (crop_23[[6]] - crop_23[[10]]) / crop_23[[6]] + crop_23[[10]]
+plot(NBR_2023, col = clb) + title(main="NBR 2023") 
+
+# opzione 2 più contrasto 
+# min_value <- min(values(NBR_2022_20m))
+# max_value <- max(values(NBR_2022_20m))
+
+# normalize the scale 
+min_value <- min(min(values(NBR_2022)), min(values(NBR_2023)))
+max_value <- max(max(values(NBR_2022)), max(values(NBR_2023)))
+
+clb2 <- colorRampPalette(c("white","darkgreen", "yellow", "orange"))(100)
+
+par(mfrow=c(1,2))
+plot(NBR_2022, col = clb2, main = "NBR index 2022", zlim = c(min_value, max_value))
+plot(NBR_2023, col = clb2, main = "NBR index 2023", zlim = c(min_value, max_value))
+
+#--------------------------------------------#
+
+# 3. Classification
+
+set.seed(42) 
+clas22 <- unsuperClass(crop_22, nClasses=5)
+clas23 <- unsuperClass(crop_23, nClasses=5)
+
+clr <- colorRampPalette(c("white", "darkorchid", "darkslateblue", "gold2", "palegreen4"))(100)
+
+# 2022
+par(mfrow=c(1,2))
+plot(clas22$map, col=clr) + title(main="Soil Classification 2022")
 plotRGB(crop_22, r=4, g=3, b=2, stretch="lin")
 
-set.seed(42) 
-class_22 <- unsuperClass(crop_22, nClasses=4)
+# frequencies of classes
+freq(clas22$map)
+# 1 -  237362 - cities / bare rock  
+# 2 - 1048263 - dry / burned land
+# 3 - 1354468 - water bodies
+# 4 -  615922 - vegetation
+# 5 -  593133 - vegetation
 
-pdf("class_22.pdf")
+# Percentage of classes in 2022
+tot_land_22 <- 237362 + 1048263 + 615922 + 593133
+tot_veg_22 <- 615922 + 593133
+percent_veg_22 <- tot_veg_22 * 100 / tot_land_22
+percent_veg_22 # 48.46533 % VEGETATION
+
+percent_cities_rocks_22 <- 237362 * 100 / tot_land_22
+percent_cities_rocks_22 # 9.514727 % CITIES/ROCKS
+
+tot_dry_22 <- 1048263 
+percent_dry_22 <- tot_dry_22 * 100 / tot_land_22
+percent_dry_22 # 42.01994 % DRY LAND
+
+# 2023
 par(mfrow=c(1,2))
-plotRGB(crop_22, r=3, g=2, b=1, stretch="lin")
-plot(class_22$map, col=clc, axes = FALSE, box = FALSE)
-dev.off()
-freq(class_22$map)
+plot(clas23$map, col=clr) + title(main="Soil Classification 2023")
+plotRGB(crop_23, r=4, g=3, b=2, stretch="lin")
 
-# 1    616807 - dry land
-# 2   2155335 - water bodies
-# 3    684669 - wild vegetation
-# 4   1239378 - cultivated land / cities
-# NA    22355
+freq(clas23$map)
+# 1 -  446911 - burned land
+# 2 -  946192 - dry land
+# 3 - 1354606 - water bodies
+# 4 -  351882 - cities / bare rock
+# 5 -  752359 - vegetation 
 
-# Total amount of wild (uncultivated) vegetation in 2022
-tot_land_22 <- 616807 + 684669 + 1239378 
-tot_wild_veg_22 <- 684669
+# Percentage of classes in 2023
+tot_land_23 <- 446911 + 946192 + 351882 + 752359
+tot_veg_23 <- 752359 
 
-prop_wildveg_22 <- tot_wild_veg_22 / tot_land_22
-percent_wildveg_22 <- tot_wild_veg_22 * 100 / tot_land_22
-percent_wildveg_22
-# percentage of wild vegetation 26.94641 in 2022
+percent_veg_23 <- tot_veg_23 * 100 / tot_land_23
+percent_veg_23 # 30.12637 % VEGETATION
 
-tot_dry_land_22 <- 616807
-prop_dry_land_22 <- tot_dry_land_22 / tot_land_22
-percent_dry_land_22 <- tot_dry_land_22 * 100 / tot_land_22
-percent_dry_land_22
-# 24.27558
+percent_cities_rocks_23 <- 351882 * 100 / tot_land_23
+percent_cities_rocks_23 # 14.09025 % CITIES/ROCKS
 
-tot_culti_22 <- 1239378
-prop_culti_22 <- tot_culti_22 / tot_land_22
-percent_culti_22 <- tot_culti_22 * 100 / tot_land_22
-percent_culti_22
-# 48.77801
+tot_dry_23 <-  946192 + 446911
+percent_dry_23 <- tot_dry_23 * 100 / tot_land_23
+percent_dry_23 #55.78338 DRY / BURNED LAND
+
+## classes and frequencies representation
+
+# dataframe creation
+cl_22 <- c("Cities/Rocks", "Vegetation", "Dry/Burned Land")
+perc22 <- c(9.5, 48.5, 42.0)
+cl_23 <- c("Cities/Rocks", "Vegetation", "Dry/Burned Land")
+perc23 <- c(14.1, 30.1, 55.7)
+
+df0 <- data.frame(cl_22, perc22)
+df1 <- data.frame(cl_23, perc23)
+
+# Graphs
+is1 <- ggplot(df0, aes(x=cl_22, y=perc22, fill=cl_22)) +  
+  geom_bar(stat="identity") +
+  ggtitle("Land Cover percentage in 2022") +
+  labs(fill="Classes", x="Classes", y="%") +
+  geom_text(aes(label=perc22), vjust=-0.3, size=3.5) +
+  scale_fill_manual(values=c("honeydew3", "indianred3", "darkolivegreen")) + 
+  ylim(0, 100) +
+  theme_minimal()
+
+is2 <- ggplot(df1, aes(x=cl_23, y=perc23, fill=cl_23)) +  
+  geom_bar(stat="identity") +
+  ggtitle("Land Cover percentage in 2023") +
+  labs(fill="Classes", x="Classes", y="%") +
+  geom_text(aes(label=perc23), vjust=-0.3, size=3.5)+
+  scale_fill_manual(values=c("honeydew3", "indianred3", "darkolivegreen")) + 
+  ylim(0, 100) +
+  theme_minimal()
+
+is1 + is2
 
 #--------------------------------------------#
 
-# 2023 Landsat L7 blabla
-rlist_23 <- list.files(pattern = "LC09_L2SP_189034_20230818_20230822_02_T1_SR_B") 
+# 4. Land Surface Temperature Analysis
 
-import_23 <- lapply(rlist_23, raster)
+setwd("~/Desktop/nuovo/LST")
+clLst <- colorRampPalette(c("blue", "light blue", "pink", "red")) (100)
 
-tgr_23 <- stack(import_23)
+lst_22 <- raster("LC08_L2SP_189034_20220908_20220914_02_T1_ST_B10.TIF")
+lst_23 <- raster("LC09_L2SP_189034_20230818_20230822_02_T1_ST_B10.TIF")
 
-crop_23 <- crop(tgr_23, ext2)
+crop_t_22 <- crop(lst_22,ext)
+crop_t_23 <- crop(lst_23,ext)
 
-plotRGB(crop_23, r=4, g=3, b=2, stretch="lin")
-
-set.seed(42) 
-class_23 <- unsuperClass(crop_23, nClasses=4)
-
-pdf("class_23.pdf")
+# Plot but different scale 
 par(mfrow=c(1,2))
-plotRGB(crop_23, r=4, g=3, b=2, stretch="lin")
-plot(class_23$map, col=clc, axes = FALSE, box = FALSE)
-dev.off()
-freq(class_23$map)
+plot(crop_t_22, col = rev(heat.colors(100)))
+plot(crop_t_23, col = rev(heat.colors(100)))
 
-# 1    651814 - wild vegetation
-# 2    708748 - dry land
-# 3    684669 - cultivated land / cities
-# 4   1182231 - water bodies
-# NA    81147
+# unify scale
+min_value_t2 <- min(min(values(crop_t_22)), min(values(crop_t_23)))
+max_value_t2 <- max(max(values(crop_t_22)), max(values(crop_t_23)))
 
-# Total amount of wild (uncultivated) vegetation in 2023
-tot_land_23 <- 651814 + 708748 + 684669 
-tot_wild_veg_23 <- 651814
+#plot 
+par(mfrow=c(1,2))
+plot(crop_t_22, col = rev(heat.colors(100)), zlim = c(min_value_t2, max_value_t2))
+plot(crop_t_23, col = rev(heat.colors(100)), zlim = c(min_value_t2, max_value_t2))
 
-prop_wildveg_23 <- tot_wild_veg_23 / tot_land_23
-percent_wildveg_23 <- tot_wild_veg_23 * 100 / tot_land_23
-percent_wildveg_23
-# percentage of wild vegetation 31.86995 in 2023
+# come transformo in temperature C°? 
+# è corretto unificare le scale  delle scale? 
+# posso lavoare su un progetto migliore? 
+# altri indici? 
+# fitoplancton 
 
-tot_dry_land_23 <- 708748
-prop_dry_land_23 <- tot_dry_land_23 / tot_land_23
-percent_dry_land_23 <- tot_dry_land_23 * 100 / tot_land_23
-percent_dry_land_23
-# 34.65369
-
-tot_culti_23 <- 684669
-prop_culti_23 <- tot_culti_23 / tot_land_23
-percent_culti_23 <- tot_culti_23 * 100 / tot_land_23
-percent_culti_23
-# 33.47637
-
-#-------------------------------------------------------#
-
-# I want to see the trend in the amount of wild green areas over the years
-data_perc_veg <- data.frame(year = c(1990, 2000, 2005, 2015, 2020, 2021, 2022, 2023),
-                            variable = c(percent_wildveg_90, percent_wildveg_00, percent_wildveg_05 ,
-                                         percent_wildveg_15, percent_wildveg_20 ,percent_wildveg_21,
-                                         percent_wildveg_22, percent_wildveg_23))
-
-data_perc_dry <- data.frame(year = c(1990, 2000, 2005, 2015, 2020, 2021, 2022, 2023),
-                            variable = c(percent_dry_land_90, percent_dry_land_00, percent_dry_land_05 ,
-                                         percent_dry_land_15, percent_dry_land_20 ,percent_dry_land_21,
-                                         percent_dry_land_22, percent_dry_land_23))
-
-data_perc_culti <- data.frame(year = c(1990, 2000, 2005, 2015, 2020, 2021, 2022, 2023),
-                            variable = c(percent_culti_90, percent_culti_00, percent_culti_05 ,
-                                         percent_culti_15, percent_culti_20 ,percent_culti_21,
-                                         percent_culti_22, percent_culti_23))
-
-# Percentage trend
-data_perc_veg$percent <- (data_perc_veg$variable - data_perc_veg$variable[1]) / data_perc_veg$variable[1] * 100
-data_perc_dry$percent <- (data_perc_dry$variable - data_perc_dry$variable[1]) / data_perc_dry$variable[1] * 100
-data_perc_culti$percent <- (data_perc_culti$variable - data_perc_culti$variable[1]) / data_perc_culti$variable[1] * 100
-
-combined_data <- bind_rows(
-  data.frame(type = "Vegetation", year = data_perc_veg$year, variable = data_perc_veg$variable, percent = data_perc_veg$percent),
-  data.frame(type = "Dry Areas", year = data_perc_dry$year, variable = data_perc_dry$variable, percent = data_perc_dry$percent),
-  data.frame(type = "Cultivated Areas", year = data_perc_culti$year, variable = data_perc_culti$variable, percent = data_perc_culti$percent)
-)
-
-
-# Creation of the graph with ggplot2
-graph <- ggplot(combined_data, aes(x = year, y = variable, color = type, group = type)) +
-  geom_line(size = 0.8) +
-  geom_point() +
-  labs(x = "Year", y = "Percentage") +
-  ggtitle("Percentage Trends Over Years") +
-  ylim(c(min(0), 100)) +
-  theme_minimal()
-
-print(graph)
-
+#--------------------------------------------#
 
