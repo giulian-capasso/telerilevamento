@@ -46,42 +46,50 @@
 
 # 1. Libraries, Data Import and Visualization 
 
+# install or recall required packages
 library(raster)  
 library(ggplot2)
 library(RStoolbox)
 library(patchwork)
 library(viridis)
 library(rasterVis)
-# Set working directory
+
+# Set working directory for MAcOS
 setwd("~/Desktop/palermo")
 
-# data import and processing
+# Import Data and start processing
 # 2022 
+# use rlist to create a list of files in the folder set as working directoty according to a specific pattern, like 2022 in this case
 rlist_22 <- list.files(pattern = "2022") 
+# now apply a function to the whole list, in this case 'raster', to import satellite images 
 import_22 <- lapply(rlist_22, raster)
+# finally merge all the bands in one single rasterbirck with the funcion 'stack'
 tgr_22 <- stack(import_22)
 
+# The original image is too wide to focus on the burned areas, so we need to crop
 # create an exent and crop the image to focus on the burned area
 ext <- c(330000, 371000, 4200220, 4237800)
 crop_22 <- crop(tgr_22, ext) 
 
-#export pdf
+# export the true colors image in pdf
 pdf("Truecolor2022.pdf")
 plotRGB(crop_22, r=4, g=3, b=2, stretch ="lin")
 dev.off()
 
+# Now do the same with 2023 images in the folder
 # 2023
 rlist_23 <- list.files(pattern = "2023") 
 import_23 <- lapply(rlist_23, raster)
 tgr_23 <- stack(import_23)
 crop_23 <- crop(tgr_23, ext) 
 
+# and export
 pdf("Truecolor2023.pdf")
 plotRGB(crop_23, r=4, g=3, b=2, stretch ="lin")
 dev.off()
 
-
-#Bands for both images
+#Quick reminder of the bands
+# Bands for both images
 
 # Blue : band 1 - B02 file
 # Green: band 2 - B03 file 
@@ -89,10 +97,10 @@ dev.off()
 # NIR:   band 4 - B06 file
 # SWIR:  band 9 - B07 file
 
-# ______ for LAND SUFRACE TEMPERATURE CHAPTER 
-#band 10 B10 Landsat8 for Thermal Data
+# ______ for LAND SUFRACE TEMPERATURE CHAPTER 4.
+# band 10 B10 Landsat8 for Thermal Data
 
-# Image visualization for the burned area 2022-23
+# Image visualization for the burned area 2022-23 with ggplot
 # True color visualization
 t_2022 <- ggRGB(crop_22, r=4, g=3, b=2, stretch="lin") + ggtitle("2022") +
   theme(axis.text = element_blank(), axis.title = element_blank())
@@ -101,7 +109,7 @@ t_2023 <- ggRGB(crop_23, r=4, g=3, b=2, stretch="lin") + ggtitle("2023") +
 
 t_2022 + t_2023
 
-# False Colors > NIR on Red 
+# Now False Colors > NIR on Red to enhance vegetation
 f_2022 <- ggRGB(crop_22, r=10, g=4, b=3, stretch="lin") + ggtitle("2022")+
   theme(axis.text = element_blank(), axis.title = element_blank())
 f_2023 <- ggRGB(crop_23, r=10, g=4, b=3, stretch="lin") + ggtitle("2023")+
@@ -112,6 +120,8 @@ dev.off()
 
 # Multi composition 1990-2023 with title 
 # Not relevant for presentation
+# used 1990 data exclusiverly for the prequel
+
 par(mfrow = c(2, 3), bty = "n",oma = c(1, 1, 2, 1), bg = "white")
 
 plotRGB(crop_90, r=3, g=2, b=1, stretch="lin")
@@ -149,20 +159,21 @@ dev.off()
 ####-----#### DVI (Difference Vegetation Index): NIR - RED ####-----####
 
 # My Palettes
-# Blind Friendly
+# My favorite Blind Friendly palettes 
 viridis <- colorRampPalette(viridis(7))(255)
 magma <- colorRampPalette(magma(7))(255)
 inferno <- colorRampPalette(inferno(7))(255)
 
-# Personal use - High contrast 
+# Palettes for personal use - High contrast 
 clb2 <- colorRampPalette(c("white","darkgreen", "yellow", "orange"))(100)
 col_v <- colorRampPalette(c("white", "lightyellow1", "yellow","palegreen2", "cyan4", "darkblue", "orchid4", "magenta2", "plum1"))(100)
 col_v2 <- colorRampPalette(c("lightyellow1", "yellow","palegreen2", "cyan4", "darkblue", "orchid4", "magenta2","plum1"))(100)
 
-
+# dvi = Nir - Red
 dvi22 = crop_22[[6]] - crop_22[[4]]
 dvi23 = crop_23[[6]] - crop_23[[4]]
 
+# Different scales so 
 # Unify scale 
 min_value_dvi <- min(min(values(dvi22)), min(values(dvi23)))
 max_value_dvi <- max(max(values(dvi22)), max(values(dvi23)))
@@ -193,7 +204,6 @@ ndvi22 =  dvi22 / (crop_22[[10]] + crop_22[[4]])
 ndvi23 =  dvi23 / (crop_23[[10]] + crop_23[[4]])
 
 # Plot and export as pdf
-
 pdf("ndvi-22-23.pdf")
 par(mfrow=c(1,2))
 plot(ndvi22, col=magma, axes = FALSE, box = FALSE, main="NDVI 2022")
@@ -284,7 +294,7 @@ plot(BAI_S22_adj, col = magma, axes = FALSE, box = FALSE, main = "BAI 2022")
 plot(BAI_S23_adj, col = magma, axes = FALSE, box = FALSE, main = "BAI 2023")
 dev.off()
 # positive values = burned areas
-#negative values = heakty vegetation
+# negative values = heakty vegetation
 
 # BAI DIFFERENCE
 BAIDIF <- BAI_S22_adj - BAI_S23_adj
@@ -319,7 +329,7 @@ plot(SAVIDIF, col = inferno, axes = FALSE, box = FALSE,main = "SAVI DIF")
 # negative value = healty vegetation
 
 
-#ALL INDICES COMPARED, PLOTTED AND EXPORTED
+# ALL INDICES COMPARED, PLOTTED AND EXPORTED
 pdf("totale.pdf")
 par(mfrow=c(2,4))
 plot(ndvi_dif, col = inferno, axes = FALSE, box = FALSE, main = "NDVI DIF")
@@ -335,8 +345,12 @@ dev.off()
 #--------------------------------------------#
 
 # 3. Classification
+# Classification with Unsuperclass is a powerful tool in remote sensing for land cover classification 
+# When comparing pre and post-fire satellite imagery, it aids in identifying changes in vegetation, land use, and burnt areas
+# This function assists in highlighting shifts in land cover, making it easier to assess the impact of wildfires and track environmental changes over time
 
-# set-seed function to specify the pixels to extrapolate over and over
+# set.seed() function is used to set the seed for the random number generator 
+# This is a crucial function, especially in statistical and data analysis tasks, where reproducibility of results is important
 set.seed(42) 
 clas22 <- unsuperClass(crop_22, nClasses=5)
 clas23 <- unsuperClass(crop_23, nClasses=5)
@@ -349,7 +363,9 @@ par(mfrow=c(2,1))
 plot(clas22$map, col=clr, axes = FALSE, box = FALSE) + title(main="Soil Classification 2022")
 plotRGB(crop_22, r=4, g=3, b=2, stretch="lin")
 
-# frequencies of classes
+# frequencies of classes = distribution of data points (pixels or segments) among different classes or clusters 
+# identified by an unsupervised classification algorithm 
+# This distribution provides insights into the composition of the image
 freq(clas22$map)
 # 1 -  237362 - cities / bare rock  
 # 2 - 1048263 - dry / burned land
@@ -361,16 +377,16 @@ freq(clas22$map)
 tot_land_22 <- 237362 + 1048263 + 615922 + 593133
 tot_veg_22 <- 615922 + 593133
 percent_veg_22 <- tot_veg_22 * 100 / tot_land_22
-percent_veg_22 # 48.46533 % VEGETATION
+percent_veg_22 # 48.46533 % VEGETATION in 2022
 
 percent_cities_rocks_22 <- 237362 * 100 / tot_land_22
-percent_cities_rocks_22 # 9.514727 % CITIES/ROCKS
+percent_cities_rocks_22 # 9.514727 % CITIES/ROCKS in 2022
 
 tot_dry_22 <- 1048263 
 percent_dry_22 <- tot_dry_22 * 100 / tot_land_22
-percent_dry_22 # 42.01994 % DRY LAND
+percent_dry_22 # 42.01994 % DRY LAND in 2022
 
-# 2023
+# Now the same with 2023 
 par(mfrow=c(1,2))
 plot(clas23$map, col=clr, axes = FALSE, box = FALSE) + title(main="Soil Classification 2023")
 plotRGB(crop_23, r=4, g=3, b=2, stretch="lin")
@@ -396,7 +412,7 @@ tot_dry_23 <-  946192 + 446911
 percent_dry_23 <- tot_dry_23 * 100 / tot_land_23
 percent_dry_23 #55.78338 DRY / BURNED LAND
 
-## classes and frequencies representation
+## classes and frequencies representation ## 
 
 # dataframe creation
 cl_22 <- c("Cities/Rocks", "Vegetation", "Dry/Burned Land")
@@ -431,6 +447,9 @@ is1 + is2
 #--------------------------------------------#
 
 # 4. Land Surface Temperature Analysis
+# using Band 10 of Landsat 8-9
+# valuable remote sensing technique for assessing the temperature of the Earth's surface from satellite imagery 
+# in this case I want to compare 2022 to 2023 to see if surface temperature have changed before and after the fire
 
 setwd("~/Desktop/palermo/LST")
 
