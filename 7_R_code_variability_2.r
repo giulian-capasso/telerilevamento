@@ -45,8 +45,13 @@ ggplot() + geom_raster(pc1sim, mapping = aes(x=x, y=y, fill=PC1))
 # Standard deviation of PC1
 sd_sim_PC1 <- focal(pc1sim, matrix(1/9, 3, 3), fun=sd)
 
-# Map by ggplot the standard deviation of the first proncipal component
+# the matrix is made up of 3x3 pixels
+# I define the unit which is the pixel so it is 1/9
+# then I define the n of columns and rows which are 3 and 3
+# then I define the function
+# now I make a plot with a color palette
 
+# Map by ggplot the standard deviation of the first proncipal component
 ggplot() + 
 geom_raster(sd_sim_PC1, mapping =aes(x=x, y=y, fill=layer)) + 
 scale_fill_viridis(option = "cividis") + 
