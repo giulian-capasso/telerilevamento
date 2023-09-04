@@ -71,8 +71,12 @@ im4 <- ggplot() + geom_raster(sd5, mapping = aes(x=x, y=y, fill=layer)) + scale_
 im3 + im4
 
 # now window 7x7 and plot
+# unit is a pixel but the matrix this time is 7x7 so a pixel is 1/49 
+# the function we use is always the standard variatio (sd)
 sd7 <- focal(pc1sim, matrix(1/49, 7, 7), fun=sd)
 
 im7 <- ggplot() + geom_raster(sd7, mapping = aes(x=x, y=y, fill=layer)) + scale_fill_viridis(option = "inferno")
 
 im3 + im4 + im7
+
+
