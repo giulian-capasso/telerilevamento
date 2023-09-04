@@ -33,7 +33,7 @@ plot(lst_2010)
 plot(lst_2015)
 
 
-#now let's see how to import this set of images all together.
+# now let's see how to import this set of images all together.
 # we use the lapplay function which applies a function on a list or a vector
 # takes a list of files and applies the same function to all of them
 # in our case to import we use the raster function that we apply to the entire list of files.
@@ -51,6 +51,7 @@ TGr <- stack(import)
 TGr
 plot(TGr)
 
+# now plot
 plotRGB(TGr, 1, 2, 3, stretch="Lin") 
 plotRGB(TGr, 2, 3, 4, stretch="Lin") 
 plotRGB(TGr, 4, 3, 2, stretch="Lin") 
@@ -64,19 +65,24 @@ plot(TGr, col=cl)
 levelplot(TGr,col.regions=cl, main="LST variation in time",
            names.attr=c("July 2000","July 2005", "July 2010", "July 2015"))
 
-##########################
-#### Example 2: NO2 decrease during the lockdown period
-##########################
+##############################################################################
+#### Example 2: NO2 decrease during the lockdown period ####
+##############################################################################
 
+# recall packages
 library(raster)
 
+# set working directory (for MacOS) 
 setwd("~/Desktop/lab/en")
 
+# upload raster image
 en01 <- raster("EN_0001.png") 
 
+# create a personalized color palette and plot
 cl <- colorRampPalette(c('red','orange','yellow'))(100) # 
 plot(en01, col=cl)
 
+# assign to make the workflow easier 
 en13 <- raster("EN_0013.png")
 plot(en13, col=cl)
 
@@ -85,12 +91,15 @@ plot(en13, col=cl)
 # Exercise: import the whole as in the Greenland example
 # by the following steps: list.files, lapply, stack 
 
+# tell R to list all files with a specific pattern in the file name, in this case "EN" 
 rlist <- list.files(pattern="EN")
 
 # lapply(X,FUN)
+# now aplly a specific finction, in this case raster (to import the images) to a list of files
 rimp <- lapply(rlist, raster)
 
-# stack
+# stack 
+# now merge all files in a unique rasterbirck 
 en <- stack(rimp)
 
 # plot everything
