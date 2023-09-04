@@ -56,10 +56,12 @@ dev.off()
 
 # plot now just the blue band - B1_sre
 plot(l2011$B1_sre)
-# or
+# or with [[]] 
 plot(l2011[[1]])
 
 plot(l2011$B1_sre) 
+# create a personalized color palette with colorRampPalette(c()) 
+# see some R colors here https://bookdown.org/hneth/ds4psy/D-3-apx-colors-basics.html
 cl <- colorRampPalette(c("black", "grey", "light grey")) (100)
 plot(l2011$B1_sre, col=cl) 
 
@@ -67,11 +69,13 @@ plot(l2011$B1_sre, col=cl)
 clb <- colorRampPalette(c("dark blue", "blue", "light blue")) (100)
 plot(l2011$B1_sre, col=clb) 
 
-# export pdf image to lab folder
+# export pdf image to lab folder,
+#  always add dev.off() at the end
 pdf("banda1.pdf")
 plot(l2011$B1_sre, col=clb) 
+dev.off()
 
-# export png
+# or you can also export png
 png("banda1.png")
 plot(l2011$B1_sre, col=clb) 
 dev.off()
@@ -80,9 +84,9 @@ dev.off()
 clg <- colorRampPalette(c("dark green", "green", "light green")) (100)
 plot(l2011$B2_sre, col=clg) 
 
-# par function allows to set specific multi frame graphics
+# par function allows to set specific multi frame graphics or in general set the image space
 # with the par funtion i can plot two or more specific bands/images side by side, in raws and columns
-par(mfrow=c(1,2))
+par(mfrow=c(1,2)) # 2 columns 1 row 
 plot(l2011$B1_sre, col=clb) 
 plot(l2011$B2_sre, col=clg) 
 dev.off()
@@ -94,7 +98,7 @@ plot(l2011$B1_sre, col=clb)
 plot(l2011$B2_sre, col=clg) 
 dev.off()
 
-# exercise: revert the multiframe
+# exercise: revert the multiframe 2 rows 1 column 
 par(mfrow=c(2,1))
 plot(l2011$B1_sre, col=clb) 
 plot(l2011$B2_sre, col=clg) 
