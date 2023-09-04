@@ -1,4 +1,11 @@
-####### Pre-post fire analysis Palermo August 2023 ####### 
+#******* ******* ******* THIS WAS JUST AN EXPERIMENT 
+#******* ******* >> GO TO 00_R_code_exam.r <<
+#******* **** FOR A FINALIZED VERSION
+#******* ** OF THIS ANALYSIS
+#******* * THANKS * 
+#*******
+
+####### Prequel Pre-post fire analysis Palermo August 2023 ####### 
 
 
 # The project focuses on the fires that occurred in the area of Palermo, Sicily between July and August 2023
