@@ -26,10 +26,11 @@ ggRGB(similaun, 1, 2, 3)
 #rasterPCA> extract a single layer with multivariate analysis> starting from three layers, we compact in a single layer
 simPCA <- rasterPCA(similaun)
 simPCA
-summary(simPCA$model) # $model indicates the model we are going to use (let's see the correlations between the bands)
+summary(simPCA$model) 
+# $model indicates the model we are going to use (let's see the correlations between the bands)
 # Importance of components:
-# Proportion of Variance = first componet explains 27%, the second 32%, the third 0%
-# Cumulative Proportion = btw first and sencon 99,62%, 
+# Proportion of Variance = first componet explains 78%, the second 32%, the third 0%
+# Cumulative Proportion = btw first and second 99,62%, 
 
 plot(simPCA$map)
 
@@ -69,6 +70,7 @@ im4 <- ggplot() + geom_raster(sd5, mapping = aes(x=x, y=y, fill=layer)) + scale_
 
 im3 + im4
 
+# now window 7x7 and plot
 sd7 <- focal(pc1sim, matrix(1/49, 7, 7), fun=sd)
 
 im7 <- ggplot() + geom_raster(sd7, mapping = aes(x=x, y=y, fill=layer)) + scale_fill_viridis(option = "inferno")
