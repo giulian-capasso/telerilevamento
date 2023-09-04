@@ -1,14 +1,17 @@
+# LAND COVER ANALYSIS 
 # Code for generating land cover maps from satellite imagery
 # multitemporal analysis of a modification in land use
+# using land classificatiion and calculating frequencies 
 
-
+# recall packages
 library(raster)
-library(RStoolbox) # #contains functions for classification
+library(RStoolbox) # contains functions for classification
 # install.packages("ggplot2")
 library(ggplot2)
 # install.packages("gridExtra")
 library(gridExtra) # for grid.arrange plotting
 
+# set Working directory for Mac=S
 setwd("~/Desktop/lab")
 
 # NIR 1, RED 2, GREEN 3
@@ -16,7 +19,7 @@ setwd("~/Desktop/lab")
 # let's import the multispectral images defor1 and defor2
 defor1 <- brick("defor1.jpg") # brick to import the entire dataset and band of the image
 plotRGB(defor1, r=1, g=2, b=3, stretch="lin")
-ggRGB(defor1, r=1, g=2, b=3, stretch="lin")
+ggRGB(defor1, r=1, g=2, b=3, stretch="lin") # plot with ggplot
 
 # import defor2 e plot together
 
@@ -24,11 +27,11 @@ defor2 <- brick("defor2.jpg")
 plotRGB(defor2, r=1, g=2, b=3, stretch="lin")
 ggRGB(defor2, r=1, g=2, b=3, stretch="lin")
 
-par(mfrow=c(1,2)) #plot the images in the same graph
+par(mfrow=c(1,2)) # plot the images in the same graph with par function 
 plotRGB(defor1, r=1, g=2, b=3, stretch="lin")
 plotRGB(defor2, r=1, g=2, b=3, stretch="lin")
 
-# multiframe with ggplot2 
+# Multiframe with ggplot2 
 # today we use it for the first time to make statistical graphs on the frequencies of the classes 
 # but we will also use it later as a graphic rendering of satellite or drone images
 # ggRGB function is based on two packages, ggplot2 and RStoolbox
@@ -47,20 +50,20 @@ library(patchwork)
 p1+p2
 p1/p2 # to put one image on tho pf the other
 
-# unsupervised classification
+# unsupervised classification - 2 classes
 d1c <- unsuperClass(defor1, nClasses=2)
 plot(d1c$map) #always specify "map"
 # class 1: forest
 # class 2: agriculture
 
-# set.seed() would allow you to attain the same results ...
+# set.seed() would allow you to obtain the same results ...
 
 d2c <- unsuperClass(defor2, nClasses=2)
 plot(d2c$map)
 # class 1: agriculture
 # class 2: forest
 
-# unsupervised classification of defor2 from 2006
+# unsupervised classification of defor2 from 2006 - 3 classes
 d2c3 <- unsuperClass(defor2, nClasses=3)
 plot(d2c3$map)
 
@@ -84,31 +87,34 @@ freq(defor2c$map)
 # create a dataset with all frequencies and then do a final plot with ggplot2
 # calculation of the proportion and percentage of the forest in 92 and 06
 
+# assign a variable to the total number of pixels
 totpxdefor1 <- 341292
 
 # class proportion
 prop_defor1 <- 305664 / totpxdefor1
 prop_defor1
-[1] 0.8956085
+[1] 0.8956085 # of forest in defor 1
 
 # class percentage 
 perc_defor1 <- 305664 * 100 / totpxdefor1
-# [1] 89.56085
+# [1] 89.56085 % of forest in defor 1
 
 # Calculate percentage agricultural areas
 totpxagr1 <- 341292
 prop_agr1 <- 35628 / totpxagr1
 perc_agr1 <- 35628 * 100 / totpxagr1
 perc_agr1
-# [1] 10.43915
+# [1] 10.43915 % of agricultural areas in defor 1 
+
+################## NOW DEFOR 2 ####################
 
 # Percentage forest and agricultural areas in defor 2
-> perc_for2 <- 164530 * 100 / 342726
-> perc_for2
-[1] 48.00628
-> perc_agr2 <- 100 - perc_for2
-> perc_agr2
-[1] 51.99372
+perc_for2 <- 164530 * 100 / 342726
+perc_for2
+# [1] 48.00628 % of forest in defor 2
+perc_agr2 <- 100 - perc_for2
+perc_agr2
+# [1] 51.99372 % of agricultural areas in defor 2 
 
 #FINAL DATA 
 # Percentage forest 92 = 89.56085 (defor1) 
@@ -128,9 +134,12 @@ percent_2006 <- c(48.00, 51.99)
 multitemporal <- data.frame(class, percent_1992, percent_2006)
 multitemporal
 
-# plot both of them
+# plot both of them with ggplot 
 ggplot(multitemporal, aes(x=class, y=percent_1992, color=class)) + geom_bar(stat="identity", fill="white")
 ggplot(multitemporal, aes(x=class, y=percent_2006, color=class)) + geom_bar(stat="identity", fill="white")
 
+# then use patchwork to visualizd them 
 p1 <- ggplot(multitemporal, aes(x=class, y=percent_1992, color=class)) + geom_bar(stat="identity", fill="white")
 p2 <- ggplot(multitemporal, aes(x=class, y=percent_2006, color=class)) + geom_bar(stat="identity", fill="white")
+
+p1 + p2 
