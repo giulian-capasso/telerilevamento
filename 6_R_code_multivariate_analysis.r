@@ -8,12 +8,14 @@
 
 # the first band is the one with the most info and therefore we use the one to calculate the variability
 
+# recall the packages
 library(raster)
 library(RStoolbox)
 library(ggplot2)
 library(patchwork)
 library(viridis)
 
+# se Working directoy for MacOS
 setwd("~/Desktop/lab")
 
 # import the image
@@ -24,16 +26,20 @@ plot(p224r63_2011)
 # before multivariate analysis let's resample the image to decrease the resolution and aggregate some pixels
 # AGGREGATE function makes summary statistics. fact stands for factor, i.e. how much we aggregate pixels
 # ex. fact=10 >> 10pixel x 10 pixel
+
 # resampling
 p224r63_2011res <- aggregate(p224r63_2011, fact=10)
 
+# Now plot the original one and the resampled to see the difference 
 g1 <- ggRGB(p224r63_2011, 4,3,2)
 g2 <- ggRGB(p224r63_2011res, 4,3,2)
-
+# (with patchwork)
 g1+g2
 
+# even more compression, higher loss of resolution
 p224r63_2011res100 <- aggregate(p224r63_2011, fact=100)
 
+# let's compare
 g1 <- ggRGB(p224r63_2011, 4,3,2)
 g2 <- ggRGB(p224r63_2011res, 4,3,2)
 g3 <- ggRGB(p224r63_2011res100, 4,3,2)
@@ -51,11 +57,13 @@ summary(p224r63_2011respca$model)
 
 plot(p224r63_2011respca$map)
 
+# now plot the first component PC1, that has the most variability, with ggplot and virids inferno as color Palette 
 g1 <- ggplot() +
 geom_raster(p224r63_2011respca$map, mapping =aes(x=x, y=y, fill=PC1)) +
 scale_fill_viridis(option = "inferno") +
 ggtitle("PC1")
 
+#plot PC7
 g2 <- ggplot() +
 geom_raster(p224r63_2011respca$map, mapping =aes(x=x, y=y, fill=PC7)) +
 scale_fill_viridis(option = "inferno") +
