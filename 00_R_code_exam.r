@@ -580,3 +580,36 @@ plot(sd23, col=inferno)
 sdif = sd23 - sd22
 plot(sdif, col=inferno)
 #______________________________#
+
+# PCA (Principal Component Analysis) WITHOUT RStoolbox!
+sample22 <- sampleRandom(crop_22, 10000)
+sample23 <- sampleRandom(crop_23, 10000)
+pcasample22 <- prcomp(sample22)
+pcasample23 <- prcomp(sample23)
+
+# Plot the first 2 comonents 2022 
+gp1 <- ggplot() +
+  geom_raster(pcres22$map, mapping =aes(x=x, y=y, fill=PC1)) +
+  scale_fill_viridis(option = "magma") +
+  theme(axis.text = element_blank(), axis.title = element_blank()) +
+  ggtitle("PC1 2022")
+gp2 <- ggplot() +
+  geom_raster(pcres22$map, mapping =aes(x=x, y=y, fill=PC2)) +
+  scale_fill_viridis(option = "magma") +
+  theme(axis.text = element_blank(), axis.title = element_blank()) +
+  ggtitle("PC2 2022")
+gp1+gp2
+
+# Plot the first 2 comonents 2023
+gr1 <- ggplot() +
+  geom_raster(pcres23$map, mapping =aes(x=x, y=y, fill=PC1)) +
+  scale_fill_viridis(option = "magma") +
+  theme(axis.text = element_blank(), axis.title = element_blank()) +
+  ggtitle("PC1 2023")
+gr2 <- ggplot() +
+  geom_raster(pcres23$map, mapping =aes(x=x, y=y, fill=PC2)) +
+  scale_fill_viridis(option = "magma") +
+  theme(axis.text = element_blank(), axis.title = element_blank()) +
+  ggtitle("PC2 2023")
+
+(gp1+gp2) / (gr1+gr2)
