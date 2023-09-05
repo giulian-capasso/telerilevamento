@@ -1,0 +1,424 @@
+\documentclass{beamer}
+\usetheme{Boadilla}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{mathrsfs}
+\usepackage{listings}
+\usepackage{hyperref}
+
+
+% Personalizzazione dei colori
+\definecolor{myprimarycolor}{RGB}{69,108,81}
+\definecolor{mysecondarycolor}{RGB}{50,150,50}
+\setbeamercolor{structure}{fg=myprimarycolor}
+\setbeamercolor{block title}{fg=white,bg=mysecondarycolor}
+\setbeamercolor{block body}{bg=white}
+
+\title{Analisi Incendi Luglio-Agosto 2023, Palermo, IT}
+
+\institute{Alma Mater Studiorum - Università di Bologna\\ Esame Telerilevamento Geo-Ecologico}
+\author{Giulian Capasso}
+\date{07/09/2023}
+% logo
+\titlegraphic{
+  \vspace{1cm}
+  \centering
+  \includegraphics[height=1.5cm]{alma-mater-studiorum-universita-di-bologna-logo-vector.png}
+}
+
+% Personalizzazione barra in basso
+\setbeamertemplate{footline}{
+  \leavevmode%
+  \hbox{%
+    \begin{beamercolorbox}[wd=.23\paperwidth,ht=2.5ex,dp=1.125ex,center]{author in head/foot}%
+      \usebeamerfont{author in head/foot}\insertshortauthor
+    \end{beamercolorbox}%
+    \begin{beamercolorbox}[wd=.53\paperwidth,ht=2.5ex,dp=1.125ex,center]{title in head/foot}%
+      \usebeamerfont{title in head/foot}\insertshorttitle
+    \end{beamercolorbox}%
+    \begin{beamercolorbox}[wd=.25\paperwidth,ht=2.5ex,dp=1.125ex,right]{date in head/foot}%
+      \insertframenumber{} / \inserttotalframenumber\hspace*{1.3cm}
+    \end{beamercolorbox}}%
+  \vskip0pt%
+}
+
+% Definizione di uno stile per il codice
+\lstdefinestyle{mystyle}{
+    basicstyle=\tiny\ttfamily,
+    breaklines=true,
+}
+
+
+
+
+\begin{document}
+\begin{frame}
+\titlepage
+\end{frame}
+
+\begin{frame}{Sommario}
+    \begin{itemize}
+        \item Inquadramento e scopi del progetto
+        \item Metodologia
+        \item Indagine Preliminare
+        \item Analisi 
+\begin{itemize}
+            \item Importazione dati e Visualizzazione
+            \item Indici Spettrali
+            \item Land Cover Classification
+            \item Land Surface Temperature
+        \end{itemize}
+    \item Conclusioni
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Inquadramento e scopi del Progetto}
+\frametitle{Inquadramento e scopi del Progetto}
+\vspace{0.5cm}
+\begin{columns}
+  \begin{column}{0.20\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{Exam/Inquadramento.png}
+  \end{column}
+  \begin{column}{0.34\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{Mappaincendicopernicus.png}
+  \end{column}
+  \begin{column}{0.39\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{Exam/Mondello.png}
+  \end{column}
+\end{columns}
+\vspace{0.5cm}
+\small % Cambia il font del testo a piccolo
+Dal 24 Luglio al 10 Agosto, la periferia della città di Palermo è stata colpita da incendi che hanno causato oltre a evaquazioni e assenza di acqua ed elettricità, anche un'importante perdita di biodiversità. Il progetto punta a:
+\vspace{0.2cm}
+\begin{itemize}
+    \item Comparare le immagini prima e dopo gli incendi
+    \item Calcolare la perdita di vegetazione
+    \item Visualizzare le alterazioni di temperatura del suolo 
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Metodologia}
+    \begin{itemize}
+        \item Utilizzo di dati satellitari da Sentinel-2B e Landsat 8-9 
+        \item Monitoraggio vegetazione tramite indici e land cover
+        \item Confronto dati termici terrestri prima e dopo l'incendio
+    \end{itemize}
+    \vspace{0.5cm}
+    \centering
+    \includegraphics[width=0.7\textwidth]{Exam/sentinel2b_bands.jpeg}
+    {\tiny Sentinel-2B}
+    \vspace{0.2cm}
+    \includegraphics[width=0.7\textwidth]{Exam/Landsat bands.png}
+    {\tiny Landsat 8}
+\end{frame}
+
+\begin{frame}[fragile]{Indagine Preliminare}
+ \framesubtitle{Analisi intera area dal 1990 al 2023}
+ \begin{center} 
+            \includegraphics[height=3cm]{Exam/Prequel_Tc.png}
+       \end{center}
+            \vspace{0.1cm}
+             \begin{center} 
+                \includegraphics[height=3cm]{Exam/Prequelnir.png}
+\end{center}
+     \end{frame}
+     
+\begin{frame}[fragile]
+    \frametitle{\scriptsize Classificazione terreno - Trend classi e Differenza tra NDVI}
+ \begin{center} 
+            \includegraphics[height=3.5cm]{Exam/prequeltrend.png}
+            \end{center}
+             \begin{center} 
+
+             \vspace{0.5cm}
+                \includegraphics[height=2.5cm]{Exam/prequelndvi.png}
+\end{center}
+     \end{frame}
+
+
+\begin{frame}[fragile]{Analisi}
+    \framesubtitle{Importazione dati e Visualizzazione - Focus sull'incendio - 2022 e 2023}
+    \begin{columns}
+        \begin{column}{0.6\textwidth}
+            \begin{lstlisting}[style=mystyle]
+#2022
+rlist_22 <- list.files(pattern = "2022") 
+import_22 <- lapply(rlist_22, raster)
+tgr_22 <- stack(import_22)
+ext <- c(330000, 371000, 4200220, 4237800)
+crop_22 <- crop(tgr_22, ext) 
+png("Truecolor2022.png")
+plotRGB(crop_22, r=4, g=3, b=2, stretch ="lin")
+dev.off()
+            \end{lstlisting}
+        \end{column}
+ \begin{column}{0.3\textwidth}
+            \includegraphics[width=\textwidth]{Exam/Truecolor2022.png}
+        \end{column}
+    \end{columns}
+ \begin{columns}
+        \begin{column}{0.6\textwidth}
+ \begin{lstlisting}[style=mystyle]
+#2023
+rlist_23 <- list.files(pattern = "2023") 
+import_23 <- lapply(rlist_23, raster)
+tgr_23 <- stack(import_23)
+crop_23 <- crop(tgr_23, ext) 
+plotRGB(crop_23, r=4, g=3, b=2, stretch="lin")
+png("Truecolor2023.png")
+plotRGB(crop_23, r=4, g=3, b=2, stretch ="lin")
+dev.off()
+ \end{lstlisting}
+\end{column}
+        \begin{column}{0.3\textwidth}
+            \includegraphics[width=\textwidth]{Exam/Truecolor2023.png}
+        \end{column}
+    \end{columns}
+
+\end{frame}
+
+
+\begin{frame}[fragile]
+    \frametitle{\scriptsize True Colors - False Colors ggplot2 e patchwork}
+             
+              \includegraphics[height=7.5cm]{Exam/ggrgb.pdf}
+                \centering
+              
+\end{frame}
+
+\begin{frame}[fragile]{Indici Spettrali}
+    \framesubtitle{NDVI - NBR}
+ \begin{itemize}
+        \item \scriptsize NDVI (Normalized Difference Vegetation Index): (NIR-RED)/(NIR+RED)
+        \item NBR (Normalized Burn Ratio): (NIR-SWIR)/(NIR+SWIR)
+\end{itemize}
+ 
+            \begin{center} 
+        \includegraphics[height=6.5cm]{Exam/ndvi+nbr.pdf}
+    \end{center}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{\scriptsize Altri Indici: SAVI(Soil Adjusted Vegetation Index) ; BAI(Burned Area Index)}
+
+  \begin{lstlisting}[style=mystyle]
+#SAVI<-(NIR-RED)/(NIR+RED+L*(1+L))||L=0.5
+#BAI<-(SWIR-NIR)/(SWIR+NIR)+A)*(1+A)*(1+B)
+            \end{lstlisting}
+            
+            \begin{center}
+\includegraphics[height=7.5cm]{Exam/bai+savi.pdf}  
+\end{center}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{\scriptsize Confronto Indici su Differenze tra il 2022 e 2023 :: Pre-Post incendi}
+\framesubtitle{\tiny Palette viridis(inferno) 2. Palette personalizzata ad alto contrasto}
+
+\includegraphics[height= 5 cm]{Exam/tot.png} 
+
+\end{frame}
+
+\begin{frame}[fragile]{Land Cover Classification}
+    \framesubtitle{Assegnazione di classi e mappatura di vegetazione}
+    \begin{columns}
+        \begin{column}{0.45\textwidth}
+            \begin{lstlisting}[style=mystyle]
+#2022
+set.seed(42) 
+clas22<-unsuperClass(crop_22,nClasses=5)
+par(mfrow=c(1,2))
+plot(clas22$map,col=clr)+title(main="Soil Classification 2022")
+plotRGB(crop_22,r=4,g=3,b=2,stretch="lin")
+
+freq(clas22$map)
+# 1 - 237362 - cities / bare rock  
+# 2 -1048263 - dry / burned land
+# 3 -1354468 - water bodies
+# 4 - 615922 - vegetation
+# 5 - 593133 - vegetation
+
+# Percentage of classes in 2022
+tot_land_22<-237362+1048263+615922+593133
+tot_veg_22<-615922+593133
+percent_veg_22<-tot_veg_22*100/tot_land_22 #48.46533 %VEG
+
+percent_cities_rocks_22<-237362*100/tot_land_22 #9.514727 %C/R
+
+tot_dry_22<-1048263 
+percent_dry_22<-tot_dry_22*100/tot_land_22 #42.01994 %DRY LAND
+            \end{lstlisting}
+        \end{column}
+        
+        \begin{column}{0.47\textwidth}
+            \includegraphics[width=\textwidth]{Exam/Class22plot.png}
+        \end{column}
+    \end{columns}
+
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{\scriptsize Assegnazione di classi e mappatura di vegetazione}
+    \begin{columns}
+        \begin{column}{0.45\textwidth}
+            \begin{lstlisting}[style=mystyle]
+#2023
+set.seed(42) 
+clas23<-unsuperClass(crop_23,nClasses=5)
+par(mfrow=c(1,2))
+plot(clas23$map, col=clr)+title(main="Soil Classification 2023")
+plotRGB(crop_23,r=4,g=3,b=2,stretch="lin")
+
+freq(clas23$map)
+# 1- 446911 - burned land
+# 2- 946192 - dry land
+# 3-1354606 - water bodies
+# 4- 351882 - cities / bare rock
+# 5- 752359 - vegetation 
+
+# Percentage of classes in 2023
+tot_land_23<-446911+946192+351882+752359
+tot_veg_23<-752359 
+
+percent_veg_23<-tot_veg_23*100/tot_land_23 #30.12637 %VEG
+
+percent_cities_rocks_23<-351882*100/tot_land_23 #14.09025 %C/R
+
+tot_dry_23<-946192+446911
+percent_dry_23<-tot_dry_23*100/tot_land_23 #55.78338 DRY/BURNED LAND
+
+            \end{lstlisting}
+        \end{column}
+        
+        \begin{column}{0.47\textwidth}
+            \includegraphics[width=\textwidth]{Exam/Class23plot.png}
+        \end{column}
+    \end{columns}
+
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{\scriptsize Rappresentazione Classi}
+            \begin{lstlisting}[style=mystyle]
+# Assegno Classi e percentuali
+cl_22<-c("Cities/Rocks","Vegetation","Dry/Burned Land")
+perc22<-c(9.5,48.5,42.0) #[...2023]
+df0<-data.frame(cl_22,perc22) #[...2023]
+
+# Graphs
+is1<-ggplot(df0,aes(x=cl_22,y=perc22,fill=cl_22)) + geom_bar(stat="identity") + ggtitle("Land Cover percentage in 2022")labs(fill="Classes",x="Classes",y="%") + geom_text(aes(label=perc22),vjust=-0.3, size=3.5) + scale_fill_manual(values=c("honeydew3", "indianred3", "darkolivegreen")) + ylim(0,100)+theme_minimal()
+#[... lo stesso per il 2023]
+
+            \end{lstlisting}
+        \vspace{0.5cm}
+            \includegraphics[width=\textwidth]{Exam/Landcoveris.png}
+
+\end{frame}
+
+\begin{frame}[fragile]{Land Surface Temperature}
+    \framesubtitle{Band 10 Thermal Infrared Landsat 8}
+  \begin{lstlisting}[style=mystyle]
+lst_22<-raster("LC08_L2SP_189034_20220908_20220914_02_T1_ST_B10.TIF")
+lst_23<-raster("LC09_L2SP_189034_20230818_20230822_02_T1_ST_B10.TIF")
+crop_t_22<-crop(lst_22,ext)
+crop_t_23<-crop(lst_23,ext)
+min_value_t2<-min(min(values(crop_t_22)),min(values(crop_t_23)))
+max_value_t2<-max(max(values(crop_t_22)),max(values(crop_t_23)))
+#plot 
+plot(crop_t_22,col=rev(heat.colors(100)),zlim=c(min_value_t2,max_value_t2),axes=FALSE, main = "2022")
+plot(crop_t_23,col=rev(heat.colors(100)),zlim=c(min_value_t2, max_value_t2),axes=FALSE, main = "2023")
+            
+            \end{lstlisting}
+            \centering
+\includegraphics[height=4.5cm]{Exam/temp.png}   
+                  
+\end{frame}
+
+%\begin{frame}[fragile]
+%\frametitle{\scriptsize Tentativo conversione B10 10 Landsat 8 in valori di temperatura}
+%           \begin{lstlisting}[style=mystyle]
+%# Coefficienti di calibrazione radiometrica per la banda 10
+%RADIANCE_MULT_BAND_10<-3.8000E-04
+%RADIANCE_ADD_BAND_10 <- 0.10000
+
+%# Calcolo della radianza monocromatica (Lλ)
+%radiance_band <- (crop_t_22 * RADIANCE_MULT_BAND_10) + RADIANCE_ADD_BAND_10
+
+%# Costanti termodinamiche
+%PLANCK_CONSTANT<-6.62607004e-34
+%SPEED_OF_LIGHT<-299792458
+%BOLTZMANN_CONSTANT<-1.38064852e-23
+
+%# Lunghezza d'onda della banda termica 10 in metri
+%WAVELENGTH_BAND_10<-10.8951e-6
+
+%# Calcolo della temperatura radiometrica (TIR)
+%temperature_radiometric<-(PLANCK_CONSTANT*SPEED_OF_LIGHT)/(WAVELENGTH_BAND_10 %* BOLTZMANN_CONSTANT)/log((radiance_band/0.99)+1)
+
+%# Coefficienti di calibrazione per la temperatura radiometrica
+%K1_CONSTANT_BAND_10<-774.8853
+%K2_CONSTANT_BAND_10<-1321.0789
+
+%# Calibrazione della temperatura radiometrica
+%temperature_calibrated<-%K2_CONSTANT_BAND_10/log((K1_CONSTANT_BAND_10/temperature_radiometric)+1)
+
+%# Visualizzazione della temperatura della superficie terrestre (LST)
+%plot(temperature_calibrated,main = "Land Surface Temperature(LST)in Celsius")  %       \end{lstlisting}
+%\href{https://https://supportsi.hexagon.com/s/article/Converting-Landsat-8-Thermal-Band-10-to-Temperature-values?language=en_US}
+%            \centering
+%\includegraphics[height=4.5cm]{Exam/temp.png}   
+                  
+%\end{frame}
+
+%\begin{frame}[fragile]{Tentativo conversione in Celsius}
+%    \framesubtitle{Google Earth Engine}      
+%\end{frame}
+
+
+\begin{frame}{Conclusioni}
+    \centering
+    \small
+    \begin{itemize}
+    \item  Grazie al telerilevamento è stato possibile individuare chiaramente le differenze nella copertura vegetale nelle aree colpite dagli incendi
+            \vspace{0.2cm}
+    \item NBR e BAI risultano gli indici che restituiscono più accuratezza
+                \vspace{0.2cm}
+    \item Dal 2022 al 2023 la vegetazione è diminuita dal 48.5\% al 30.1\%., mentre le aree spoglie sono aumentate dal 42.0\% al 55.7\%. La land cover analysis riflette chiaramente l'impatto degli incendi
+                \vspace{0.2cm}
+    \item I dati termici da Landsat mostra le aree bruciate con temperature più elevate rispetto alle altre
+                \vspace{0.2cm}
+    \item Future analisi 
+    \begin{itemize}
+        \item Monitoraggio della Ripresa Vegetativa
+         \item Monotoraggio Incendi Dolosi
+    \end{itemize}
+    \end{itemize}
+\end{frame}
+
+
+\begin{frame}{Fonti e collegamenti esterni }
+\frametitle{}
+\begin{itemize}
+\small 
+\item \href{https://www.earthdatascience.org/courses/earth-analytics/multispectral-remote-sensing-modis/normalized-burn-index-dNBR/}{\scriptsize Wasser, L. and Cattau, Me. (2017) Work with the difference normalized burn index (NBR) - using spectral remote sensing to understand the impacts of fire on the landscape}
+\item \href{https://www.mdpi.com/2504-3900/2/7/364}{\scriptsize Filipponi, F. (2018) Bais2: Burned area index for sentinel-2}
+ \item \href{https://supportsi.hexagon.com/s/article/Converting-Landsat-8-Thermal-Band-10-to-Temperature-values?language=en_US}{\scriptsize Converting Landsat 8 Thermal Band 10 to Temperature values (2022) Hexagon help center}
+\item \href{https://custom-scripts.sentinel-hub.com/custom-scripts/sentinel-2/savi/}{\scriptsize Sentinel-Hub(nd) Savi (soil adjusted vegetation index), Sentinel Hub custom scripts}
+\item \href{https://scihub.copernicus.eu/dhus/#/home}{\scriptsize Scihub copernicus - Open access hub to download data}
+\item \href{https://github.com/giulian-capasso/telerilevamento}{ \scriptsize giulian-capasso - Github account - repository telerilevamento}
+\end{itemize}
+
+\vspace{1.5cm}
+\begin{center}
+\scriptsize Grazie! 
+Domande? 
+\end{center}
+\end{frame}
+
+
+
+\end{document}
