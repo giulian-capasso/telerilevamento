@@ -47,12 +47,11 @@
 # 1. Libraries, Data Import and Visualization 
 
 # install or recall required packages
-library(raster)  
-library(ggplot2)
-library(RStoolbox)
-library(patchwork)
-library(viridis)
-library(rasterVis)
+library(raster)     # To work with raster images - functions like 'raster', 'stack', 'crop', 'plotRGB', 'plot', 'values', 'focal', 'aggregate', 'rasterPCA'
+library(ggplot2)    # To make plots - functions like 'ggplot2', 'geom_bar', 'labs', 'scale_fill_manual', 'geom_text', 'theme_minimal' 
+library(RStoolbox)  # To classify images - functions like 'unsuperClass'
+library(patchwork)  # To easily pair plots
+library(viridis)    # To plot images and graphs with color blind friendly palettes
 
 # Set working directory for MAcOS
 setwd("~/Desktop/palermo")
