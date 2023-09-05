@@ -9,7 +9,7 @@
 # I compared the images of 08/2022 and 08/2023. 2021 images were analyzed and excluded because approximable to 2021 
 # The project might spark Interest on potential long-term analysis on arson in Sicily and vegetation recovery
 # The area examined ranges between Terrasini and Termini Imerese and covers up to Piana degli Albanesi. The Ficuzza wood was not affected
-# This code processes Sentinel 2B and landsat 8-9(band 10 for thermic data) images downloaded from https://earthexplorer.usgs.gov/
+# This code processes Sentinel 2B and landsat 8-9(band 10 for thermic data) images downloaded from https://scihub.copernicus.eu/dhus/#/home and https://earthexplorer.usgs.gov/
 
 # NAMES OF THE USED BANDS:
 
