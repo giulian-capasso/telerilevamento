@@ -566,5 +566,18 @@ temperature_celsius <- K2 / log((K1 / radianza_values) + 1)
 plot(temperature_celsius, col = (heat.colors(100)))
 
 # Again, it didn't work
+# - - - - - - - - - - - - - - #
+# Standard deviation of B10 thermal data
 
+nir22 <- crop_22[[10]]
+thermal23 <- crop_t_23$LC09_L2SP_189034_20230818_20230822_02_T1_ST_B10
+resthermal23 <- aggregate(crop_t_23, fact=5)
+resthermal22 <- aggregate(crop_t_22, fact=5)
+
+sd22 <- focal(resthermal22, matrix(1/9, 3, 3), fun=sd)
+sd23 <- focal(resthermal23, matrix(1/9, 3, 3), fun=sd)
+plot(sd22, col=inferno)
+plot(sd23, col=inferno)
+sdif = sd23 - sd22
+plot(sdif, col=inferno)
 #______________________________#
