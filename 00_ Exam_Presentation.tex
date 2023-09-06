@@ -7,18 +7,19 @@
 \usepackage{hyperref}   % to add external links 
 
 
-% Personalizzazione dei colori
-\definecolor{myprimarycolor}{RGB}{69,108,81}    % dark salvia
-\definecolor{mysecondarycolor}{RGB}{50,150,50}  % salvia 
-\setbeamercolor{structure}{fg=myprimarycolor}
-\setbeamercolor{block title}{fg=white,bg=mysecondarycolor}
-\setbeamercolor{block body}{bg=white}
+% Colors personalization
+\definecolor{myprimarycolor}{RGB}{69,108,81}    % Defining a custom primary color (dark salvia)
+\definecolor{mysecondarycolor}{RGB}{50,150,50}  % Defining a custom secondary color (salvia) 
+\setbeamercolor{structure}{fg=myprimarycolor}   % Setting the structure (e.g., text) color to the primary color
+\setbeamercolor{block title}{fg=white,bg=mysecondarycolor} % Setting block title text color to white on background of the secondary color
+\setbeamercolor{block body}{bg=white}           % Setting the block body background color to white
 
-% front page with title, institute, author, date and logo
-\title{Analisi Incendi Luglio-Agosto 2023, Palermo, IT}
-\institute{Alma Mater Studiorum - Università di Bologna\\ Esame Telerilevamento Geo-Ecologico}
-\author{Giulian Capasso}
-\date{07/09/2023}
+
+% Front page with title, institute, author, date and logo
+\title{Analisi Incendi Luglio-Agosto 2023, Palermo, IT}   % Setting the presentation title
+\institute{Alma Mater Studiorum - Università di Bologna\\ Esame Telerilevamento Geo-Ecologico}  % Setting the institute
+\author{Giulian Capasso}  % Setting the author's name
+\date{07/09/2023}         % Setting the date
 % logo
 \titlegraphic{
   \vspace{1cm}
@@ -26,7 +27,7 @@
   \includegraphics[height=1.5cm]{alma-mater-studiorum-universita-di-bologna-logo-vector.png}
 }
 
-% Personalization of the bar at the bottom of the page
+% Personalization of the bar at the bottom of the page (footline)
 \setbeamertemplate{footline}{
   \leavevmode%
   \hbox{%
@@ -43,9 +44,9 @@
 }
 
 % Code style pesonalization 
-\lstdefinestyle{mystyle}{
-    basicstyle=\tiny\ttfamily,
-    breaklines=true,
+\lstdefinestyle{mystyle}{  
+    basicstyle=\tiny\ttfamily,  % Setting the basic code style to a small and monospaced font
+    breaklines=true,            % Enabling line breaks within code listings
 }
 
 
