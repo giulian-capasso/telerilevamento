@@ -53,10 +53,10 @@
 % Here I begin my document 
 \begin{document}
 \begin{frame}
-\titlepage
+\titlepage  % Displaying the title page with the title, author, institute, and date
 \end{frame}
 
-% Summary with itemization 
+% Table of Contents (Summary) with itemization
 \begin{frame}{Sommario}
     \begin{itemize}
         \item Inquadramento e scopi del progetto
@@ -77,22 +77,24 @@
 \begin{frame}{Inquadramento e scopi del Progetto}
 \frametitle{Inquadramento e scopi del Progetto}
 \vspace{0.5cm}
+% Creating three columns within the frame
 \begin{columns}
-  \begin{column}{0.20\textwidth}
+  \begin{column}{0.20\textwidth} % First column (20% of the frame width)
     \centering
-    \includegraphics[width=\linewidth]{Exam/Inquadramento.png}
+    \includegraphics[width=\linewidth]{Exam/Inquadramento.png} % adding the image in the first column
   \end{column}
-  \begin{column}{0.34\textwidth}
+  \begin{column}{0.34\textwidth} % Second column (34% of the frame width)
     \centering
-    \includegraphics[width=\linewidth]{Mappaincendicopernicus.png}
+    \includegraphics[width=\linewidth]{Mappaincendicopernicus.png} % adding the image in the second column
   \end{column}
-  \begin{column}{0.39\textwidth}
+  \begin{column}{0.39\textwidth}  % Third column (39% of the frame width)
     \centering
-    \includegraphics[width=\linewidth]{Exam/Mondello.png}
-  \end{column}
-\end{columns}
+    \includegraphics[width=\linewidth]{Exam/Mondello.png} % adding the image in the third column
+  \end{column} 
+\end{columns} % Close the columns environment
 \vspace{0.5cm}
-\small % Cambia il font del testo a piccolo
+\small % Change the font size to small for the following text
+% Adding text to explain the context and objectives of the project
 Dal 24 Luglio al 10 Agosto, la periferia della città di Palermo è stata colpita da incendi che hanno causato oltre a evaquazioni e assenza di acqua ed elettricità, anche un'importante perdita di biodiversità. Il progetto punta a:
 \vspace{0.2cm}
 \begin{itemize}
