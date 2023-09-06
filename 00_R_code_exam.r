@@ -34,7 +34,7 @@
 # 2023 (Landsat 9)
 # LC09_L2SP_189034_20230818_20230822_02_T1_ST_B10.TIF
 
-# -------------------------------------------------- #
+# -------------------------------------------------------------------------------------------------------------------------------------- #
 
 # Summary 
 # 1. Libraries, Data Import and Visualization 
@@ -42,7 +42,7 @@
 # 3. Classification 
 # 4. Land Surface Temperature
 
-# -------------------------------------------------- #
+# -------------------------------------------------------------------------------------------------------------------------------------- #
 
 # 1. Libraries, Data Import and Visualization 
 
@@ -70,6 +70,17 @@ tgr_22 <- stack(import_22)
 ext <- c(330000, 371000, 4200220, 4237800)
 crop_22 <- crop(tgr_22, ext) 
 
+# class      : RasterBrick 
+# dimensions : 1879, 2050, 3851950, 10  (nrow, ncol, ncell, nlayers)
+# resolution : 20, 20  (x, y)
+# extent     : 330000, 371000, 4200220, 4237800  (xmin, xmax, ymin, ymax)
+# crs        : +proj=utm +zone=33 +datum=WGS84 +units=m +no_defs 
+# source     : memory
+# names      : T33SUC_20//39_B01_20m, T33SUC_20//39_B02_20m, T33SUC_20//39_B03_20m, T33SUC_20//39_B04_20m, T33SUC_20//39_B05_20m, T33SUC_20//39_B06_20m, T33SUC_20//39_B07_20m, T33SUC_20//39_B11_20m, T33SUC_20//39_B12_20m, T33SUC_20//39_B8A_20m 
+# min values :                   693,                   895,                   998,                  1001,                  1008,                   954,                   978,                  1175,                  1125,                  1048 
+# max values :                  6997,                 12072,                 13602,                 14256,                 12588,                 11521,                 11879,                 14015,                 16476,                 11366 
+
+
 # export the true colors image in pdf
 pdf("Truecolor2022.pdf")
 plotRGB(crop_22, r=4, g=3, b=2, stretch ="lin")
@@ -81,6 +92,18 @@ rlist_23 <- list.files(pattern = "2023")
 import_23 <- lapply(rlist_23, raster)
 tgr_23 <- stack(import_23)
 crop_23 <- crop(tgr_23, ext) 
+
+# > crop_23
+# class      : RasterBrick 
+# dimensions : 1879, 2050, 3851950, 10  (nrow, ncol, ncell, nlayers)
+# resolution : 20, 20  (x, y)
+# extent     : 330000, 371000, 4200220, 4237800  (xmin, xmax, ymin, ymax)
+# crs        : +proj=utm +zone=33 +datum=WGS84 +units=m +no_defs 
+# source     : memory
+# names      : T33SUC_20//49_B01_20m, T33SUC_20//49_B02_20m, T33SUC_20//49_B03_20m, T33SUC_20//49_B04_20m, T33SUC_20//49_B05_20m, T33SUC_20//49_B06_20m, T33SUC_20//49_B07_20m, T33SUC_20//49_B11_20m, T33SUC_20//49_B12_20m, T33SUC_20//49_B8A_20m 
+# min values :                  1063,                  1090,                  1053,                   984,                   702,                   840,                   858,                   969,                   991,                   842 
+# max values :                  6017,                 18766,                 14288,                 15485,                 16959,                 16845,                 16744,                 15320,                 16080,                 16605 
+
 
 # and export
 pdf("Truecolor2023.pdf")
@@ -145,7 +168,7 @@ mtext("RGB Plot Using Different Bands", outer = TRUE, cex = 1, line = 0.5)
 
 dev.off()
 
-#--------------------------------------------#
+# -------------------------------------------------------------------------------------------------------------------------------------- #
 
 # 2. Spectral Indices
 
@@ -341,7 +364,7 @@ plot(SAVIDIF, col = col_v, axes = FALSE, box = FALSE,main = "SAVI DIF")
 plot(BAIDIF, col = col_v, axes = FALSE, box = FALSE, main = "BAI DIF")
 dev.off()
 
-#--------------------------------------------#
+# -------------------------------------------------------------------------------------------------------------------------------------- #
 
 # 3. Classification
 # Classification with Unsuperclass is a powerful tool in remote sensing for land cover classification 
@@ -443,7 +466,7 @@ is2 <- ggplot(df1, aes(x=cl_23, y=perc23, fill=cl_23)) +
 
 is1 + is2
 
-#--------------------------------------------#
+# -------------------------------------------------------------------------------------------------------------------------------------- #
 
 # 4. Land Surface Temperature Analysis
 # using Band 10 of Landsat 8-9
@@ -579,9 +602,11 @@ plot(sd22, col=inferno)
 plot(sd23, col=inferno)
 sdif = sd23 - sd22
 plot(sdif, col=inferno)
-#______________________________#
 
-# PCA (Principal Component Analysis) WITHOUT RStoolbox!
+# -------------------------------------------------------------------------------------------------------------------------------------- #
+
+# Not that relevant 
+# PCA (Principal Component Analysis) 
 sample22 <- sampleRandom(crop_22, 10000)
 sample23 <- sampleRandom(crop_23, 10000)
 pcasample22 <- prcomp(sample22)
