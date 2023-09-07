@@ -174,7 +174,6 @@ dev.off()
 
 # Vegetation health measure: DVI e NDVI calculation for 2022 and 2023 using NIR and RED bands
 # Burned areas analysis with NBR index using NIR and SWIR bands
-# Burned area Index (BAI = 1 / ((0.1 - RED)^2 + (0.06 - NIR)^2). Threshold values of 0.1 in the red channel and 0.06 in the near-infrared channel are used as references.
 # SAVI SAVI = ((Band 5 – Band 4) / (Band 5 + Band 4 + 0.5)) * (1.5)
 # Creating a customized color palette
 
@@ -295,49 +294,16 @@ plot(ndvi_dif, col = inferno, axes = FALSE, box = FALSE, zlim = c(min_value_nbr,
 # positive value = lack of vegetation
 # negative lavue = healty vegetation 
 
-####-----#### BAI (SWIR-NIR ) / (SWIR + NIR) + A) * (1 + A) * (1 + B) ####-----####
-
-# Contants definitions
-A = 0.08
-B = 0.67
-L = 0.5  # Regulation constant
-
-# BAI
-BAI_S22 <- (crop_22[[9]] - crop_22[[10]]) / (crop_22[[9]] + crop_22[[10]] + A) * (1 + A) * (1 + B)
-BAI_S23 <- (crop_23[[9]] - crop_23[[10]]) / (crop_23[[9]] + crop_23[[10]] + A) * (1 + A) * (1 + B)
-
-# AApplication of L constant that equals to the condition of the soil 1=a lot of vegetion; 0=bare soil; 0.5= medium condition/standard
-BAI_S22_adj <- (1 + L) * BAI_S22 - L
-BAI_S23_adj <- (1 + L) * BAI_S23 - L
-
-pdf("BAI.pdf")
-par(mfrow=c(1,2), mar=c(1,2,2,5))
-plot(BAI_S22_adj, col = magma, axes = FALSE, box = FALSE, main = "BAI 2022")
-plot(BAI_S23_adj, col = magma, axes = FALSE, box = FALSE, main = "BAI 2023")
-dev.off()
-# positive values = burned areas
-# negative values = heakty vegetation
-
-# BAI DIFFERENCE
-BAIDIF <- BAI_S22_adj - BAI_S23_adj
-plot(BAIDIF, col = magma, axes = FALSE, box = FALSE, main = "BAI 2023")
-plot(BAIDIF, col = col_v, axes = FALSE, box = FALSE, main = "BAI 2023")
-
-# positive values = heatly vegetation 
-# negative values = burned areas
-
 ####-----#### SAVI <- (NIR - RED) / (NIR + RED + L * (1 + L)) || L = 0.5 ####-----####
 
 SAVI22 <- (crop_22[[6]] - crop_22[[4]]) / (crop_22[[6]] + crop_22[[4]] + 0.5 * (1+0.5))
 SAVI23 <- (crop_23[[6]] - crop_23[[4]]) / (crop_23[[6]] + crop_23[[4]] + 0.5 * (1+0.5)) 
 
-#SAVI VS BAI
+#SAVI
 pdf("SAVI.pdf")
 par(mfrow=c(2,2), mar=c(1,2,2,5))
 plot(SAVI22, col = magma, axes = FALSE, box = FALSE, main = "SAVI 2022")
 plot(SAVI23, col = magma, axes = FALSE, box = FALSE, main = "SAVI 2023")
-plot(BAI_S22_adj, col = magma, axes = FALSE, box = FALSE, main = "BAI 2022")
-plot(BAI_S23_adj, col = magma, axes = FALSE, box = FALSE, main = "BAI 2023")
 dev.off()
 
 # posotive values = healty vegetation
@@ -357,11 +323,9 @@ par(mfrow=c(2,4))
 plot(ndvi_dif, col = inferno, axes = FALSE, box = FALSE, main = "NDVI DIF")
 plot(nbrdif, col = inferno, axes = FALSE, box = FALSE,main = "NBR DIF")
 plot(SAVIDIF, col = inferno, axes = FALSE, box = FALSE,main = "SAVI DIF")
-plot(BAIDIF, col = inferno, axes = FALSE, box = FALSE, main = "BAI DIF")
 plot(ndvi_dif, col = col_v, axes = FALSE, box = FALSE, main = "NDVI DIF")
 plot(nbrdif, col = col_v, axes = FALSE, box = FALSE,main = "NBR DIF")
 plot(SAVIDIF, col = col_v, axes = FALSE, box = FALSE,main = "SAVI DIF")
-plot(BAIDIF, col = col_v, axes = FALSE, box = FALSE, main = "BAI DIF")
 dev.off()
 
 # -------------------------------------------------------------------------------------------------------------------------------------- #
